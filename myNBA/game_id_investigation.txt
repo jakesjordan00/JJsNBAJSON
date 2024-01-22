@@ -1,0 +1,93 @@
+Known useful endpoints
+	Playoff picture:
+		https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2023&State=0
+		https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2023&State=1
+		https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2023&State=2
+	Box Score:
+		https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022300599.json
+	Play by Play:
+		https://cdn.nba.com/static/json/liveData/playbyplay/playbyplay_0022300568.json
+	Today's endpoints:
+		Scoreboard: 
+			https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json
+		Gambling Lines: 
+			https://cdn.nba.com/static/json/liveData/odds/odds_todaysGames.json
+
+
+2022-23 play-in and playoff game_id numbering convention
+East
+	Play-in
+		7v8:	0052200101
+		9v10:	0052200111
+		WinIn:	0052200201
+	First Round:
+		1v8:
+			G1:	0042200101
+			G2:	0042200102
+			G3:	0042200103
+			G4:	0042200104		East Semis One:
+			G5:	0042200105			(1|8)v(4|5)
+			G6:	0042200106				G1: 0042200201
+			G7:	0042200107				G2: 0042200202
+		2v7:							G3: 0042200203
+			G1:	0042200111				G4: 0042200204
+			G2:	0042200112				G5: 0042200205
+			G3:	0042200113				G6: 0042200206
+			G4:	0042200114				G7: 0042200207		East Finals:
+			G5:	0042200115									(1|8 or 4|5)v(2|7 or 3|6)
+			G6:	0042200116										G1: 0042200301
+			G7:	0042200117										G2: 0042200302
+		3v6:													G3: 0042200303
+			G1:	0042200121										G4: 0042200304
+			G2:	0042200122										G5: 0042200305
+			G3:	0042200123										G6: 0042200306
+			G4:	0042200124		East Semis Two:					G7: 0042200307
+			G5:	0042200125			(2|7)v(3|6)
+			G6:	0042200126				G1: 0042200211
+			G7:	0042200127				G2: 0042200212
+		4v5:							G3: 0042200213
+			G1: 0042200131				G4: 0042200214
+			G2: 0042200132				G5: 0042200215
+			G3: 0042200133				G6: 0042200216
+			G4: 0042200134				G7: 0042200217
+			G5: 0042200135
+			G6: 0042200136
+			G7: 0042200137														Finals:
+West																			East v West
+	Play-in																			G1: 0042200401
+		7v8:  	0052200121															G2: 0042200402
+		9v10: 	0052200131															G3: 0042200403
+		WinIn:	0052200211															G4: 0042200404
+	First Round:																	G5: 0042200405
+		1v8:																		G6: 0042200406
+			G1:	0042200141															G7: 0042200407
+			G2:	0042200142
+			G3:	0042200143
+			G4:	0042200144		West Semis One:
+			G5:	0042200145			(1|8)v(4|5)
+			G6:	0042200146				G1: 0042200221
+			G7:	0042200147				G2: 0042200222
+		2v7:							G3: 0042200223
+			G1:	0042200151				G4: 0042200224
+			G2:	0042200151				G5: 0042200225
+			G3:	0042200151				G6: 0042200226
+			G4:	0042200151				G7: 0042200227		West Finals:
+			G5:	0042200151									(1|8 or 4|5)v(2|7 or 3|6)
+			G6:	0042200151										G1: 0042200311
+			G7:	0042200151										G2: 0042200312
+		3v6:													G3: 0042200313
+			G1:	0042200161										G4: 0042200314
+			G2:	0042200162										G5: 0042200315
+			G3:	0042200163										G6: 0042200316
+			G4:	0042200164		West Semis Two:					G7: 0042200317
+			G5:	0042200165			(2|7)v(3|6)
+			G6:	0042200166				G1: 0042200231
+			G7:	0042200167				G2: 0042200232
+		4v5:							G3: 0042200233
+			G1:	0042200171				G4: 0042200234
+			G2:	0042200172				G5: 0042200235
+			G3:	0042200173				G6: 0042200236
+			G4:	0042200174				G7: 0042200237
+			G5:	0042200175
+			G6:	0042200176
+			G7:	0042200177
