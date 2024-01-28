@@ -23,13 +23,20 @@ namespace nbaJSON
 
 
 
+        public global::System.Web.UI.WebControls.Label gamesCreatedLbl;
+        public global::System.Web.UI.WebControls.Label gamesUpdatedLbl;
+        public global::System.Web.UI.WebControls.Label boxCreatedLbl;
+        public global::System.Web.UI.WebControls.Label boxUpdatedLbl;
 
         protected void gameB_Click(object sender, EventArgs e)
         {
-            boxRider.boxRider.GetGames();
+            gameRider.gameRider.CheckGames(gamesCreatedLbl, gamesUpdatedLbl);
         }
 
-
+        protected void boxB_Click(object sender, EventArgs e)
+        {
+            boxRider.boxRider.CheckGames(boxCreatedLbl, boxUpdatedLbl);
+        }
 
 
         protected void pbpB_Click(object sender, EventArgs e)
@@ -59,15 +66,10 @@ namespace nbaJSON
             {
                 game = Int32.Parse(row.Cells[0].Text);
                 pbpRider.pbpRider.GetGameJson(game);
-               // boxRider.boxRider.GetGameJson(game);
             }
         }
 
 
-        protected void teamB_Click(object sender, EventArgs e)
-        {
-
-        }
 
         
     }

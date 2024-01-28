@@ -25,7 +25,7 @@ namespace pbpRider
             try
             {
                 string json = client.DownloadString(jsonLink);
-                //DupeCheck(json);
+                DupeCheck(json);
             }
             catch (WebException e)
             {

@@ -200,6 +200,7 @@
     </Compile>
     <Compile Include="boxRider.cs" />
     <Compile Include="earlyBird.cs" />
+    <Compile Include="gameRider.cs" />
     <Compile Include="pbpRider.cs" />
     <Compile Include="PlayByPlay.aspx.cs">
       <DependentUpon>PlayByPlay.aspx</DependentUpon>

@@ -33,13 +33,13 @@ namespace nbaJSON
         protected global::System.Web.UI.WebControls.Button gameB;
 
         /// <summary>
-        /// teamB control.
+        /// boxB control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button teamB;
+        protected global::System.Web.UI.WebControls.Button boxB;
 
         /// <summary>
         /// pbpB control.
