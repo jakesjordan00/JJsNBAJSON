@@ -30,6 +30,7 @@ namespace boxRider
             var client = new WebClient { Encoding = System.Text.Encoding.UTF8 };
             string jsonLink = "";
             int lastGame_id = 0;
+            int checkGame_id = 0;
             int game_id = 0;
             SqlConnection sqlConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
             using (sqlConnect)
@@ -50,6 +51,43 @@ namespace boxRider
                         }
                         else
                         {
+                            using (SqlCommand checkGame = new SqlCommand("checkBox"))
+                            {
+                                checkGame.CommandType = CommandType.StoredProcedure;
+                                using (SqlDataAdapter scheckGame = new SqlDataAdapter())
+                                {
+                                    checkGame.Connection = sqlConnect;
+                                    scheckGame.SelectCommand = checkGame;
+                                    sqlConnect.Open();
+                                    SqlDataReader reader1 = checkGame.ExecuteReader();
+                                    while (reader1.Read())
+                                    {
+                                        checkGame_id = reader1.GetInt32(1);
+                                        jsonLink = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_00" + checkGame_id + ".json";
+                                        try
+                                        {
+                                            WebRequest testRequest = WebRequest.Create(jsonLink);
+                                            WebResponse testShouldWork = testRequest.GetResponse();
+                                            string json = client.DownloadString(jsonLink);
+                                            Root JSON = JsonConvert.DeserializeObject<Root>(json);
+                                            if(reader1.GetInt32(4) == 1 && reader.GetInt32(3) != JSON.game.homeTeam.score)
+                                            {
+                                                DeleteFirstHome(JSON, checkGame_id, JSON.game.homeTeam.teamId);
+                                            }
+                                            if (reader1.GetInt32(4) == 0 && reader.GetInt32(3) != JSON.game.awayTeam.score)
+                                            {
+                                                DeleteFirstAway(JSON, checkGame_id, JSON.game.awayTeam.teamId);
+                                            }
+                                            //CreateGameLoop(checkGame_id, checkGameDate);
+                                        }
+                                        catch (WebException e)
+                                        {
+
+                                        }
+                                    }
+                                    sqlConnect.Close();
+                                }
+                            }
                             using (SqlCommand lastGame = new SqlCommand("lastBox"))
                             {
                                 lastGame.CommandType = CommandType.StoredProcedure;
@@ -127,6 +165,44 @@ namespace boxRider
                 }
             }
         }
+
+        public static void DeleteFirstHome(Root JSON, int game_id, int team_id)
+        {
+            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            using (Insert)
+            {
+                using (SqlCommand InsertData = new SqlCommand("deleteFirst"))
+                {
+                    InsertData.Connection = Insert;
+                    InsertData.CommandType = CommandType.StoredProcedure;
+                    InsertData.Parameters.AddWithValue("@game_id", game_id);
+                    InsertData.Parameters.AddWithValue("@team_id", team_id);
+                    Insert.Open();
+                    InsertData.ExecuteScalar();
+                    Insert.Close();
+                    PlayerBoxInsert(JSON);
+                }
+            }
+        }
+        public static void DeleteFirstAway(Root JSON, int game_id, int team_id) 
+        {
+            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            using (Insert)
+            {
+                using (SqlCommand InsertData = new SqlCommand("deleteFirst"))
+                {
+                    InsertData.Connection = Insert;
+                    InsertData.CommandType = CommandType.StoredProcedure;
+                    InsertData.Parameters.AddWithValue("@game_id", game_id);
+                    InsertData.Parameters.AddWithValue("@team_id", team_id);
+                    Insert.Open();
+                    InsertData.ExecuteScalar();
+                    Insert.Close();
+                    PlayerBoxInsertAway(JSON);
+                }
+            }
+        }
+
         public static void FirstBox()
         {
             int limit = 22301231;
