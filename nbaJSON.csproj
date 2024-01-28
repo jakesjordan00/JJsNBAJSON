@@ -135,8 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BusDriver.aspx" />
-    <Content Include="PlayByPlay.aspx" />
-    <Content Include="BoxScore.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -202,21 +200,7 @@
     <Compile Include="earlyBird.cs" />
     <Compile Include="gameRider.cs" />
     <Compile Include="pbpRider.cs" />
-    <Compile Include="PlayByPlay.aspx.cs">
-      <DependentUpon>PlayByPlay.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PlayByPlay.aspx.designer.cs">
-      <DependentUpon>PlayByPlay.aspx</DependentUpon>
-    </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="BoxScore.aspx.cs">
-      <DependentUpon>BoxScore.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="BoxScore.aspx.designer.cs">
-      <DependentUpon>BoxScore.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

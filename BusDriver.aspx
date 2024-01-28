@@ -1,8 +1,32 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BusDriver.aspx.cs" Inherits="nbaJSON.Bus_Driver" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-<br /><br /><br />
+<br />
+    <label style="font-size:xx-large">Bus Driver</label>
+<br />
+    <label>This page is used to "Drive the Bus". The buttons on this page will drive data entry into desired database</label>
+    <label>Change connection strings in code behind files to your own SQLServer instance.</label>
 <div class="table">
+    
+    <div class="col-lg-3" >
+        <div class="row">
+            <label style="margin-top: 5px">Only click First Time Load on the first load</label>
+        </div>
+        <div class="row">
+            <br /><br />
+            <label style="margin-top: 20px">Clicking Games will post all games played, or in progress.
+                Will update game record if the database's value does not match the value from the latest hit of the endpoint</label>
+        </div>
+        <div class="row">
+            <label style="margin-top: 20px">Clicking Box Score will post all Team and Player Box Scores. Updating is currently a WIP</label>
+        </div>
+        <div class="row">
+            <br />
+            <label style="margin-top: 10px">Clicking Play by Play will post all game's play by play data from NBA endpoint.
+                Will update any games automatically if the number of rows for that game does not match count from JSON.
+            </label>
+        </div>
+     </div>
     <div class="col-lg-3" >
         <div class="row">
         <asp:Button ID="loadB" runat="server" Text ="First time load" OnClick="loadB_Click" height="75px" Width="250px" Font-Size="XX-Large" 
