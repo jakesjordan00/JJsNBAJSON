@@ -4,7 +4,7 @@ Known useful endpoints
 		https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2023&State=1
 		https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2023&State=2
 	Box Score:
-		https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022300599.json
+		https://cdn.nba.com/static/json/liveData/boxscore/boxscore_0022300589.json
 	Play by Play:
 		https://cdn.nba.com/static/json/liveData/playbyplay/playbyplay_0022300568.json
 	Today's endpoints:
