@@ -48,6 +48,8 @@ team_idW	int,
 wScore		int,
 team_idL	int,
 lScore		int,
-arenta_id	int,
+arena_id	int,
 sellout		bit
 )
+
+drop table game
