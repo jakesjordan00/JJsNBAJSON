@@ -73,10 +73,10 @@ namespace playoffRider
             int count = JSON.bracket.playoffPictureSeries.Count();
             using (SQL)
             {
-                using (SqlCommand InsertData = new SqlCommand("pictureInsert"))
+                for (int i = 0; i < count; i++)
                 {
-                    for(int i = 0; i < count; i++)
-                    {
+                    using (SqlCommand InsertData = new SqlCommand("pictureInsert"))
+                {
                         InsertData.Connection = SQL;
                         InsertData.CommandType = CommandType.StoredProcedure;
                         InsertData.Parameters.AddWithValue("@conference",               JSON.bracket.playoffPictureSeries[i].conference);
