@@ -24,6 +24,15 @@ namespace nbaJSON
         protected global::System.Web.UI.WebControls.Button loadB;
 
         /// <summary>
+        /// boxB control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button boxB;
+
+        /// <summary>
         /// gameB control.
         /// </summary>
         /// <remarks>
@@ -33,13 +42,13 @@ namespace nbaJSON
         protected global::System.Web.UI.WebControls.Button gameB;
 
         /// <summary>
-        /// boxB control.
+        /// playoffB control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button boxB;
+        protected global::System.Web.UI.WebControls.Button playoffB;
 
         /// <summary>
         /// pbpB control.
