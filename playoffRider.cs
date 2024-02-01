@@ -18,7 +18,60 @@ namespace playoffRider
 {
     public partial class playoffRider
     {
+        static WebClient client = new WebClient { Encoding = System.Text.Encoding.UTF8 };
+        public static void GetPicture()
+        {
+            string jsonLink = "https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2023&State=0";
+            try
+            {
+                string json = client.DownloadString(jsonLink);
+                Root JSON = JsonConvert.DeserializeObject<Root>(json);
+                CheckPicture(JSON);
+            }
+            catch (WebException e)
+            {
 
+            }
+        }
+        public static void GetBracket()
+        {
+            string jsonLink = "https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2022&State=2";
+            try
+            {
+                string json = client.DownloadString(jsonLink);
+                Root JSON = JsonConvert.DeserializeObject<Root>(json);
+                CheckBracket(JSON);
+            }
+            catch (WebException e)
+            {
+
+            }
+        }
+        public static void CheckPicture(Root JSON)
+        {
+
+        }
+        public static void CheckBracket(Root JSON)
+        {
+
+        }
+
+        public static void UpdatePicture()
+        {
+
+        }
+        public static void UpdateBracket()
+        {
+
+        }
+        public static void PostPicture()
+        {
+
+        }
+        public static void PostBracket()
+        {
+
+        }
     }
 
 
