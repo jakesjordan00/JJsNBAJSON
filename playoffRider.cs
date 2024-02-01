@@ -19,6 +19,7 @@ namespace playoffRider
     public partial class playoffRider
     {
         static WebClient client = new WebClient { Encoding = System.Text.Encoding.UTF8 };
+        static SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
         public static void GetPicture()
         {
             string jsonLink = "https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2023&State=0";
@@ -49,28 +50,82 @@ namespace playoffRider
         }
         public static void CheckPicture(Root JSON)
         {
+            //If there arent any results
+            PostPicture(JSON);
 
         }
         public static void CheckBracket(Root JSON)
         {
-
+            //If there arent any results
+            PostBracket(JSON);
         }
 
-        public static void UpdatePicture()
+        public static void UpdatePicture(Root JSON)
         {
 
         }
-        public static void UpdateBracket()
+        public static void UpdateBracket(Root JSON)
         {
 
         }
-        public static void PostPicture()
+        public static void PostPicture(Root JSON)
         {
-
+            int count = JSON.bracket.playoffPictureSeries.Count();
+            using (SQL)
+            {
+                using (SqlCommand InsertData = new SqlCommand("pictureInsert"))
+                {
+                    for(int i = 0; i < count; i++)
+                    {
+                        InsertData.Connection = SQL;
+                        InsertData.CommandType = CommandType.StoredProcedure;
+                        InsertData.Parameters.AddWithValue("@conference",               JSON.bracket.playoffPictureSeries[i].conference);
+                        InsertData.Parameters.AddWithValue("@matchupType",              JSON.bracket.playoffPictureSeries[i].matchupType);
+                        InsertData.Parameters.AddWithValue("@highSeed_id",              JSON.bracket.playoffPictureSeries[i].highSeedId);
+                        InsertData.Parameters.AddWithValue("@highSeedRank",             JSON.bracket.playoffPictureSeries[i].highSeedRank);
+                        InsertData.Parameters.AddWithValue("@highSeedRegSeasonWins",    JSON.bracket.playoffPictureSeries[i].highSeedRegSeasonWins);
+                        InsertData.Parameters.AddWithValue("@highSeedRegSeasonLosses",  JSON.bracket.playoffPictureSeries[i].highSeedRegSeasonLosses);
+                        InsertData.Parameters.AddWithValue("@lowSeed_id",               JSON.bracket.playoffPictureSeries[i].lowSeedId);
+                        InsertData.Parameters.AddWithValue("@lowSeedRank",              JSON.bracket.playoffPictureSeries[i].lowSeedRank);
+                        InsertData.Parameters.AddWithValue("@lowSeedRegSeasonWins",     JSON.bracket.playoffPictureSeries[i].lowSeedRegSeasonWins);
+                        InsertData.Parameters.AddWithValue("@lowSeedRegSeasonLosses",   JSON.bracket.playoffPictureSeries[i].lowSeedRegSeasonLosses);
+                        SQL.Open();
+                        InsertData.ExecuteScalar();
+                        SQL.Close();
+                    }
+                }
+            }
         }
-        public static void PostBracket()
+        public static void PostBracket(Root JSON)
         {
-
+            int count = JSON.bracket.playoffPictureSeries.Count();
+            using (SQL)
+            {
+                using (SqlCommand InsertData = new SqlCommand("pictureInsert"))
+                {
+                    for(int i = 0; i < count; i++)
+                    {
+                        InsertData.Connection = SQL;
+                        InsertData.CommandType = CommandType.StoredProcedure;
+                        InsertData.Parameters.AddWithValue("@series_id",                    JSON.bracket.playoffBracketSeries[i].seriesId);
+                        InsertData.Parameters.AddWithValue("@conference",                   JSON.bracket.playoffBracketSeries[i].seriesConference);
+                        InsertData.Parameters.AddWithValue("@roundNumber",                  JSON.bracket.playoffBracketSeries[i].roundNumber);
+                        InsertData.Parameters.AddWithValue("@description",                  JSON.bracket.playoffBracketSeries[i].seriesText);
+                        InsertData.Parameters.AddWithValue("@status",                       JSON.bracket.playoffBracketSeries[i].seriesStatus);
+                        InsertData.Parameters.AddWithValue("@seriesWinner",                 JSON.bracket.playoffBracketSeries[i].seriesWinner);
+                        InsertData.Parameters.AddWithValue("@highSeed_id",                  JSON.bracket.playoffBracketSeries[i].highSeedId);
+                        InsertData.Parameters.AddWithValue("@highSeedSeriesWins",           JSON.bracket.playoffBracketSeries[i].highSeedSeriesWins);
+                        InsertData.Parameters.AddWithValue("@lowSeedId",                    JSON.bracket.playoffBracketSeries[i].lowSeedId);
+                        InsertData.Parameters.AddWithValue("@lowSeedSeriesWins",            JSON.bracket.playoffBracketSeries[i].lowSeedSeriesWins);
+                        InsertData.Parameters.AddWithValue("@nextGame_id",                  JSON.bracket.playoffBracketSeries[i].nextGameId);
+                        InsertData.Parameters.AddWithValue("@nextGameNumber",               JSON.bracket.playoffBracketSeries[i].nextGameNumber);
+                        InsertData.Parameters.AddWithValue("@nextSeries_id",                0); //Need to fill placeholder
+                        SQL.Open();
+                        InsertData.ExecuteScalar();
+                        SQL.Close();
+                    }
+                }
+            }
         }
     }
 
