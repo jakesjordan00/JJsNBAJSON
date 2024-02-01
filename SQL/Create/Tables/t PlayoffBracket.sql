@@ -5,11 +5,12 @@ roundNumber				int,
 description				varchar(100),	--seriesText
 status					int,			--seriesStatus
 seriesWinner			int,
-highSeedId				int,
+highSeed_id				int,
 highSeedSeriesWins		int,
-lowSeedId				int,
+lowSeed_id				int,
 lowSeedSeriesWins	 	int,
 nextGame_id				int,			--nextGameId
 nextGameNumber			int,
 nextSeries_id			int
 )
+
