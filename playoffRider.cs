@@ -22,7 +22,7 @@ namespace playoffRider
         static SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
         public static void GetPicture()
         {
-            string jsonLink = "https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2023&State=0";
+            string jsonLink = "https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2022&State=0";
             try
             {
                 string json = client.DownloadString(jsonLink);
@@ -50,19 +50,55 @@ namespace playoffRider
         }
         public static void CheckPicture(Root JSON)
         {
-            //If there arent any results
-            PostPicture(JSON);
-
+            using (SQL)
+            {
+                using (SqlCommand CheckPicture = new SqlCommand("checkPicture"))
+                {
+                    CheckPicture.Connection = SQL;
+                    CheckPicture.CommandType = CommandType.StoredProcedure;
+                    SQL.Open();
+                    SqlDataReader reader = CheckPicture.ExecuteReader();
+                    if(reader.Read())
+                    {
+                        SQL.Close();
+                        UpdatePicture(JSON);
+                    }
+                    else
+                    {
+                        SQL.Close();
+                        PostPicture(JSON);
+                    }
+                }
+            }
         }
         public static void CheckBracket(Root JSON)
         {
             //If there arent any results
-            PostBracket(JSON);
+            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            using (SQL)
+            {
+                using (SqlCommand CheckBracket = new SqlCommand("checkBracket"))
+                {
+                    CheckBracket.Connection = SQL;
+                    CheckBracket.CommandType = CommandType.StoredProcedure;
+                    SQL.Open();
+                    SqlDataReader reader = CheckBracket.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        SQL.Close();
+                        UpdateBracket(JSON);
+                    }
+                    else
+                    {
+                        SQL.Close();
+                        PostBracket(JSON);
+                    }
+                }
+            }
         }
 
         public static void UpdatePicture(Root JSON)
         {
-
         }
         public static void UpdateBracket(Root JSON)
         {
@@ -95,19 +131,29 @@ namespace playoffRider
                     }
                 }
             }
+
+            GetBracket();
         }
         public static void PostBracket(Root JSON)
         {
-            int count = JSON.bracket.playoffPictureSeries.Count();
+            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            int count = JSON.bracket.playoffBracketSeries.Count();
             using (SQL)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    using (SqlCommand InsertData = new SqlCommand("pictureInsert"))
+                    using (SqlCommand InsertData = new SqlCommand("bracketInsert"))
                     {
+                        int highSeed_id = JSON.bracket.playoffBracketSeries[i].highSeedId;
+                        int lowSeed_id = JSON.bracket.playoffBracketSeries[i].lowSeedId;
+                        //string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Replace(highSeed_id.ToString(), "").Replace(lowSeed_id.ToString(), "").Replace("_", "");
+                        string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Remove(0, 3).Remove(1, 2).Replace(lowSeed_id.ToString(), "").Replace(highSeed_id.ToString(), "").Insert(3, "00").Replace("_", "");
+                        //series_id = series_id.Remove(0, 3).Remove(1, 2);
+                        //series_id = series_id.Replace(lowSeed_id.ToString(), "").Replace(highSeed_id.ToString(), "");
+                        //series_id = series_id.Insert(3, "00").Replace("_", "");
                         InsertData.Connection = SQL;
                         InsertData.CommandType = CommandType.StoredProcedure;
-                        InsertData.Parameters.AddWithValue("@series_id",                    JSON.bracket.playoffBracketSeries[i].seriesId);
+                        InsertData.Parameters.AddWithValue("@series_id",                    series_id);
                         InsertData.Parameters.AddWithValue("@conference",                   JSON.bracket.playoffBracketSeries[i].seriesConference);
                         InsertData.Parameters.AddWithValue("@roundNumber",                  JSON.bracket.playoffBracketSeries[i].roundNumber);
                         InsertData.Parameters.AddWithValue("@description",                  JSON.bracket.playoffBracketSeries[i].seriesText);
@@ -120,6 +166,7 @@ namespace playoffRider
                         InsertData.Parameters.AddWithValue("@nextGame_id",                  JSON.bracket.playoffBracketSeries[i].nextGameId);
                         InsertData.Parameters.AddWithValue("@nextGameNumber",               JSON.bracket.playoffBracketSeries[i].nextGameNumber);
                         InsertData.Parameters.AddWithValue("@nextSeries_id",                0); //Need to fill placeholder
+                        
                         SQL.Open();
                         InsertData.ExecuteScalar();
                         SQL.Close();
