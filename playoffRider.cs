@@ -20,6 +20,11 @@ namespace playoffRider
     {
         static WebClient client = new WebClient { Encoding = System.Text.Encoding.UTF8 };
         static SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+        public static void init()
+        {
+            GetPicture();
+            GetBracket();
+        }
         public static void GetPicture()
         {
             string jsonLink = "https://stats.nba.com/stats/playoffbracket?LeagueID=00&SeasonYear=2022&State=0";
@@ -99,6 +104,58 @@ namespace playoffRider
 
         public static void UpdatePicture(Root JSON)
         {
+            int count = JSON.bracket.playoffPictureSeries.Count();
+            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            using (SQL)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    using (SqlCommand UpdatePictureCheck = new SqlCommand("updatePictureCheck"))
+                    {
+                        UpdatePictureCheck.Connection = SQL;
+                        UpdatePictureCheck.CommandType = CommandType.StoredProcedure;
+                        UpdatePictureCheck.Parameters.AddWithValue("@conference", JSON.bracket.playoffPictureSeries[i].conference);
+                        UpdatePictureCheck.Parameters.AddWithValue("@matchupType", JSON.bracket.playoffPictureSeries[i].matchupType);
+                        UpdatePictureCheck.Parameters.AddWithValue("@highSeed_id", JSON.bracket.playoffPictureSeries[i].highSeedId);
+                        UpdatePictureCheck.Parameters.AddWithValue("@highSeedRank", JSON.bracket.playoffPictureSeries[i].highSeedRank);
+                        UpdatePictureCheck.Parameters.AddWithValue("@highSeedRegSeasonWins", JSON.bracket.playoffPictureSeries[i].highSeedRegSeasonWins);
+                        UpdatePictureCheck.Parameters.AddWithValue("@highSeedRegSeasonLosses", JSON.bracket.playoffPictureSeries[i].highSeedRegSeasonLosses);
+                        UpdatePictureCheck.Parameters.AddWithValue("@lowSeed_id", JSON.bracket.playoffPictureSeries[i].lowSeedId);
+                        UpdatePictureCheck.Parameters.AddWithValue("@lowSeedRank", JSON.bracket.playoffPictureSeries[i].lowSeedRank);
+                        UpdatePictureCheck.Parameters.AddWithValue("@lowSeedRegSeasonWins", JSON.bracket.playoffPictureSeries[i].lowSeedRegSeasonWins);
+                        UpdatePictureCheck.Parameters.AddWithValue("@lowSeedRegSeasonLosses", JSON.bracket.playoffPictureSeries[i].lowSeedRegSeasonLosses);
+                        SQL.Open();
+                        SqlDataReader reader = UpdatePictureCheck.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            SQL.Close();
+                            using (SqlCommand UpdatePicture = new SqlCommand("updatePicture"))
+                            {
+                                UpdatePicture.Connection = SQL;
+                                UpdatePicture.CommandType = CommandType.StoredProcedure;
+                                UpdatePicture.Parameters.AddWithValue("@conference", JSON.bracket.playoffPictureSeries[i].conference);
+                                UpdatePicture.Parameters.AddWithValue("@matchupType", JSON.bracket.playoffPictureSeries[i].matchupType);
+                                UpdatePicture.Parameters.AddWithValue("@highSeed_id", JSON.bracket.playoffPictureSeries[i].highSeedId);
+                                UpdatePicture.Parameters.AddWithValue("@highSeedRank", JSON.bracket.playoffPictureSeries[i].highSeedRank);
+                                UpdatePicture.Parameters.AddWithValue("@highSeedRegSeasonWins", JSON.bracket.playoffPictureSeries[i].highSeedRegSeasonWins);
+                                UpdatePicture.Parameters.AddWithValue("@highSeedRegSeasonLosses", JSON.bracket.playoffPictureSeries[i].highSeedRegSeasonLosses);
+                                UpdatePicture.Parameters.AddWithValue("@lowSeed_id", JSON.bracket.playoffPictureSeries[i].lowSeedId);
+                                UpdatePicture.Parameters.AddWithValue("@lowSeedRank", JSON.bracket.playoffPictureSeries[i].lowSeedRank);
+                                UpdatePicture.Parameters.AddWithValue("@lowSeedRegSeasonWins", JSON.bracket.playoffPictureSeries[i].lowSeedRegSeasonWins);
+                                UpdatePicture.Parameters.AddWithValue("@lowSeedRegSeasonLosses", JSON.bracket.playoffPictureSeries[i].lowSeedRegSeasonLosses);
+                                SQL.Open();
+                                UpdatePicture.ExecuteScalar();
+                                SQL.Close();
+                            }
+                        }
+                        else
+                        {
+                            SQL.Close();
+                            PostPicture(JSON);
+                        }
+                    }
+                }
+            }
         }
         public static void UpdateBracket(Root JSON)
         {
@@ -131,8 +188,6 @@ namespace playoffRider
                     }
                 }
             }
-
-            GetBracket();
         }
         public static void PostBracket(Root JSON)
         {
@@ -146,7 +201,6 @@ namespace playoffRider
                     {
                         int highSeed_id = JSON.bracket.playoffBracketSeries[i].highSeedId;
                         int lowSeed_id = JSON.bracket.playoffBracketSeries[i].lowSeedId;
-                        //string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Replace(highSeed_id.ToString(), "").Replace(lowSeed_id.ToString(), "").Replace("_", "");
                         string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Remove(0, 3).Remove(1, 2).Replace(lowSeed_id.ToString(), "").Replace(highSeed_id.ToString(), "").Insert(3, "00").Replace("_", "");
                         //series_id = series_id.Remove(0, 3).Remove(1, 2);
                         //series_id = series_id.Replace(lowSeed_id.ToString(), "").Replace(highSeed_id.ToString(), "");
