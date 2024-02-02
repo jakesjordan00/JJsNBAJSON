@@ -31,10 +31,10 @@ go
 
 
 
-create procedure bracketCheck @series_id int, @highSeed_id int, @highSeedSeriesWins	int, @lowSeedId int, @lowSeedSeriesWins	int
+create procedure bracketCheck @series_id int, @highSeed_id int, @highSeedSeriesWins	int, @lowSeed_id int, @lowSeedSeriesWins	int
 as
 select * from PlayoffBracket 
-where series_id = @series_id and (highSeed_id != @highSeed_id or highSeedSeriesWins != @highSeedSeriesWins or lowSeed_id != @lowSeedId or lowSeedSeriesWins != @lowSeedId)
+where series_id = @series_id and (highSeed_id != @highSeed_id or highSeedSeriesWins != @highSeedSeriesWins or lowSeed_id != @lowSeed_id or lowSeedSeriesWins != @lowSeed_id)
 go
 
 create procedure bracketInsert 
@@ -46,7 +46,7 @@ create procedure bracketInsert
 @seriesWinner			int,
 @highSeed_id			int,
 @highSeedSeriesWins		int,
-@lowSeedId				int,
+@lowSeed_id				int,
 @lowSeedSeriesWins	 	int,
 @nextGame_id			int,		
 @nextGameNumber			int,
@@ -61,7 +61,7 @@ insert into PlayoffBracket values(
 @seriesWinner		,
 @highSeed_id		,
 @highSeedSeriesWins	,
-@lowSeedId			,
+@lowSeed_id			,
 @lowSeedSeriesWins	,
 @nextGame_id		,
 @nextGameNumber		,
@@ -83,7 +83,7 @@ create procedure updatePictureCheck
 as
 select * 
 from PlayoffPicture
-where (conference = @conference and matchupType = @matchupType) and (
+where (conference = @conference and matchupType = @matchupType and highSeedRank = @highSeedRank) and (
 highSeed_id				!= @highSeed_id				or
 highSeedRank			!= @highSeedRank			or
 highSeedRegSeasonWins	!= @highSeedRegSeasonWins	or
@@ -116,7 +116,7 @@ lowSeed_id				= @lowSeed_id				,
 lowSeedRank				= @lowSeedRank				,
 lowSeedRegSeasonWins	= @lowSeedRegSeasonWins		,
 lowSeedRegSeasonLosses	= @lowSeedRegSeasonLosses
-where (conference = @conference and matchupType = @matchupType) and (
+where (conference = @conference and matchupType = @matchupType and highSeedRank = @highSeedRank) and (
 highSeed_id				!= @highSeed_id				or
 highSeedRank			!= @highSeedRank			or
 highSeedRegSeasonWins	!= @highSeedRegSeasonWins	or
@@ -125,3 +125,134 @@ lowSeed_id				!= @lowSeed_id				or
 lowSeedRank				!= @lowSeedRank				or
 lowSeedRegSeasonWins	!= @lowSeedRegSeasonWins	or
 lowSeedRegSeasonLosses	!= @lowSeedRegSeasonLosses)
+go
+
+create procedure updateBracketCheck
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@description			varchar(100),
+@status					int,		
+@seriesWinner			int,
+@highSeed_id			int,
+@highSeedSeriesWins		int,
+@lowSeed_id				int,
+@lowSeedSeriesWins	 	int,
+@nextGame_id			int,		
+@nextGameNumber			int,
+@nextSeries_id			int
+as
+select * 
+from PlayoffBracket
+where series_id = @series_id and (
+description				!= @description				or
+status					!= @status					or
+seriesWinner			!= @seriesWinner			or
+highSeed_id				!= @highSeed_id				or
+highSeedSeriesWins		!= @highSeedSeriesWins		or
+lowSeed_id				!= @lowSeed_id				or
+lowSeedSeriesWins		!= @lowSeedSeriesWins		or
+nextGame_id				!= @nextGame_id				or
+nextGameNumber			!= @nextGameNumber			or
+nextSeries_id			!= @nextSeries_id)
+go
+
+create procedure updateBracket
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@description			varchar(100),
+@status					int,		
+@seriesWinner			int,
+@highSeed_id			int,
+@highSeedSeriesWins		int,
+@lowSeed_id				int,
+@lowSeedSeriesWins	 	int,
+@nextGame_id			int,		
+@nextGameNumber			int,
+@nextSeries_id			int
+as
+update PlayoffBracket set
+description			= @description			,
+status				= @status				,
+seriesWinner		= @seriesWinner			,
+highSeed_id			= @highSeed_id			,
+highSeedSeriesWins	= @highSeedSeriesWins	,
+lowSeed_id			= @lowSeed_id			,
+lowSeedSeriesWins	= @lowSeedSeriesWins	,
+nextGame_id			= @nextGame_id			,
+nextGameNumber		= @nextGameNumber		,
+nextSeries_id		= @nextSeries_id		
+where series_id = @series_id and (
+description			!= @description			or
+status				!= @status				or
+seriesWinner		!= @seriesWinner		or
+highSeed_id			!= @highSeed_id			or
+highSeedSeriesWins	!= @highSeedSeriesWins	or
+lowSeed_id			!= @lowSeed_id			or
+lowSeedSeriesWins	!= @lowSeedSeriesWins	or
+nextGame_id			!= @nextGame_id			or
+nextGameNumber		!= @nextGameNumber		or
+nextSeries_id		!= @nextSeries_id		)
+go
+
+create procedure updatePictureCheckEntry
+@conference					varchar(4),	
+@matchupType				varchar(30),
+@highSeed_id				int,		
+@highSeedRank				int,
+@highSeedRegSeasonWins		int,
+@highSeedRegSeasonLosses	int,
+@lowSeed_id					int,		
+@lowSeedRank				int,
+@lowSeedRegSeasonWins		int,
+@lowSeedRegSeasonLosses 	int
+as
+select * 
+from PlayoffPicture
+where 
+conference				= @conference				and 
+matchupType				= @matchupType				and 
+highSeedRank			= @highSeedRank				and 
+highSeed_id				= @highSeed_id				and
+highSeedRank			= @highSeedRank				and
+highSeedRegSeasonWins	= @highSeedRegSeasonWins	and
+highSeedRegSeasonLosses	= @highSeedRegSeasonLosses	and
+lowSeed_id				= @lowSeed_id				and
+lowSeedRank				= @lowSeedRank				and
+lowSeedRegSeasonWins	= @lowSeedRegSeasonWins		and
+lowSeedRegSeasonLosses	= @lowSeedRegSeasonLosses
+go
+
+
+create procedure updateBracketCheckEntry
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@description			varchar(100),
+@status					int,		
+@seriesWinner			int,
+@highSeed_id			int,
+@highSeedSeriesWins		int,
+@lowSeed_id				int,
+@lowSeedSeriesWins	 	int,
+@nextGame_id			int,		
+@nextGameNumber			int,
+@nextSeries_id			int
+as
+select * 
+from PlayoffBracket
+where 
+series_id = @series_id								and 
+description				= @description				and
+status					= @status					and
+seriesWinner			= @seriesWinner				and
+highSeed_id				= @highSeed_id				and
+highSeedSeriesWins		= @highSeedSeriesWins		and
+lowSeed_id				= @lowSeed_id				and
+lowSeedSeriesWins		= @lowSeedSeriesWins		and
+nextGame_id				= @nextGame_id				and
+nextGameNumber			= @nextGameNumber			and
+nextSeries_id			= @nextSeries_id
+go
+

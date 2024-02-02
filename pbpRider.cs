@@ -260,7 +260,6 @@ namespace pbpRider
 
         public class Action
         {
-
             public int actionNumber { get; set; }
             public string clock { get; set; }
             public DateTime timeActual { get; set; }
