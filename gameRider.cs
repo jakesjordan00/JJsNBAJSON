@@ -18,7 +18,7 @@ using nbaJSON;
 
 namespace gameRider
 { 
-    public partial class gameRider
+    public partial class gameRider //test
     {
         static int limit = 0;
         static int gamesCreatedInt = 0;
