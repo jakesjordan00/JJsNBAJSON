@@ -199,7 +199,6 @@
     <Compile Include="boxRider.cs" />
     <Compile Include="earlyBird.cs" />
     <Compile Include="gameRider.cs" />
-    <Compile Include="GetSet.cs" />
     <Compile Include="LoopDriver.cs" />
     <Compile Include="pbpRider.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
