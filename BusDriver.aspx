@@ -17,7 +17,7 @@
             style="color:cornflowerblue; background-color:black; border-color:black; text-decoration:none;  text-align:center;border-radius: 15px; border: 3px solid grey;"/>
         </div>
         <div class="col-lg-3" >
-            <label style="">Clicking Box Score will post all Team and Player Box Scores. Updating is currently a WIP</label>
+            <label style="">Clicking Box Score will post all Team and Player Box Scores. If there is data already loaded, it will update</label>
         </div>
         <div class="col-lg-3" >
             <asp:Button ID="boxB" runat="server" Text ="Box Score" OnClick="boxB_Click" height="75px" Width="250px" Font-Size="XX-Large" 
@@ -35,11 +35,11 @@
         style="color:black; background-color:cornflowerblue; border-color:black; text-decoration:none;  text-align:center;border-radius: 15px; border: 3px solid black;"/>
         </div>
         <div class="col-lg-3" >
-            <label style="">WIP. Click to create or update Playoff Picture. If playoffs are currently taking place, Playoff Bracket created or updated as well.</label>
+            <label style="">Click to create or update Playoff Picture. If playoffs are currently taking place, Playoff Bracket created or updated as well.</label>
         </div>
         <div class="col-lg-3" >
             <asp:Button ID="playoffB" runat="server" Text ="Playoff Picture" OnClick="playoffB_Click" height="75px" Width="250px" Font-Size="XX-Large"
-            style="color:black; background-color:indianred; border-color:black; text-decoration:none;  text-align:center;border-radius: 15px; border: 3px solid black;"/>
+            style="color:black; background-color:goldenrod; border-color:black; text-decoration:none;  text-align:center;border-radius: 15px; border: 3px solid black;"/>
         </div>
     </div>
 
@@ -58,8 +58,14 @@
      <div class="row" style="height:35px">
          <label style="font-size:x-large">Database Monitoring</label>
     </div>
-     <div class="row" style="height:150px">
+     <div class="row" style="height:30px">
          <asp:Label  id="statusL" style="font-size:large;" runat="server" Font-Size="Large" Font-Bold="true"></asp:Label>
+         <asp:Label ID="gamesCreatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="true" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
+         <asp:Label ID="boxCreatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="true" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
+    </div>
+    <div class="row" style="height:30px">
+         <asp:Label ID="gamesUpdatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="true" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
+         <asp:Label ID="boxUpdatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="true" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>            
     </div>
 </div>
 
@@ -72,16 +78,11 @@
          <div class="row" style="text-align:left; padding:15px 0px" ></div>
          <div class="row" style="text-align:left; padding:15px 0px" ></div>
          <div class="row" style="text-align:left; padding:15px 0px" >
-             <asp:Label ID="gamesCreatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="true" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
              <br />
-             <asp:Label ID="gamesUpdatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="true" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
          </div>   
          <div class="row" style="text-align:left; padding:15px 0px" ></div>
          <div class="row" style="text-align:left; padding:15px 0px" ></div>
          <div class="row" style="text-align:left; padding:15px 0px" >
-             <asp:Label ID="boxCreatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="true" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
-             <br />
-             <asp:Label ID="boxUpdatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="true" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
          </div>   
     </div>  
 

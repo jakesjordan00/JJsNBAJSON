@@ -63,8 +63,16 @@ namespace gameRider
 
                             }
                         }
-                        string gamesCreated = gamesCreatedInt.ToString() + " Games Created";
-                        gamesCreatedLbl.Text = gamesCreated;
+                        if (gamesCreatedInt == 0)
+                        {
+                            gamesCreatedLbl.ForeColor = System.Drawing.Color.DarkGoldenrod;
+                            gamesCreatedLbl.Text = "Program run successfully, but no games found to create yet. Please try again once another game has tipped off.";
+                        }
+                        else
+                        {
+                            gamesCreatedLbl.ForeColor = System.Drawing.Color.Green;
+                            gamesCreatedLbl.Text = "Program run successfully, " + gamesCreatedInt.ToString() + " games created";
+                        }
                         sqlConnect.Close();
                     }
                 }
@@ -102,8 +110,16 @@ namespace gameRider
 
                             }
                         }
-                        string gamesUpdated = gamesUpdatedInt.ToString() + " Games Updated";
-                        gamesUpdatedLbl.Text = gamesUpdated;
+                        if(gamesUpdatedInt == 0)
+                        {
+                            gamesUpdatedLbl.ForeColor = System.Drawing.Color.DarkGoldenrod;
+                            gamesUpdatedLbl.Text = "Program run successfully, but no games found needing updates.";
+                        }
+                        else
+                        {
+                            gamesUpdatedLbl.ForeColor = System.Drawing.Color.Green;
+                            gamesUpdatedLbl.Text = "Program run successfully, " + gamesUpdatedInt.ToString() + " games updated";
+                        }
                         sqlConnect.Close();
                     }
                 }
