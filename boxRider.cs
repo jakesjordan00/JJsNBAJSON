@@ -46,11 +46,12 @@ namespace boxRider
                         SqlDataReader reader = firstGameSQL.ExecuteReader();
                         if (!reader.Read())
                         {
-                            FirstBox();
                             sqlConnect.Close();
+                            FirstBox(22300001, 22301231);
                         }
                         else
                         {
+                            sqlConnect.Close();
                             using (SqlCommand checkGame = new SqlCommand("checkBox"))
                             {
                                 checkGame.CommandType = CommandType.StoredProcedure;
@@ -70,11 +71,11 @@ namespace boxRider
                                             WebResponse testShouldWork = testRequest.GetResponse();
                                             string json = client.DownloadString(jsonLink);
                                             Root JSON = JsonConvert.DeserializeObject<Root>(json);
-                                            if(reader1.GetInt32(4) == 1 && reader.GetInt32(3) != JSON.game.homeTeam.score)
+                                            if(reader1.GetInt32(4) == 1 && reader1.GetInt32(3) != JSON.game.homeTeam.score)
                                             {
                                                 DeleteFirstHome(JSON, checkGame_id, JSON.game.homeTeam.teamId);
                                             }
-                                            if (reader1.GetInt32(4) == 0 && reader.GetInt32(3) != JSON.game.awayTeam.score)
+                                            if (reader1.GetInt32(4) == 0 && reader1.GetInt32(3) != JSON.game.awayTeam.score)
                                             {
                                                 DeleteFirstAway(JSON, checkGame_id, JSON.game.awayTeam.teamId);
                                             }
@@ -108,8 +109,7 @@ namespace boxRider
                                             string json = client.DownloadString(jsonLink);
                                             Root JSON = JsonConvert.DeserializeObject<Root>(json);
                                             string lastGameDate = JSON.game.gameTimeLocal.ToShortDateString();
-                                            //CreateGameLoop(lastGame_id, lastGameDate);
-
+                                            DateFinder(lastGame_id, lastGameDate);
                                         }
                                         catch (WebException e)
                                         {
@@ -122,45 +122,6 @@ namespace boxRider
                                 }
                             }
                         }
-                    }
-                }
-                using (SqlCommand checkGames = new SqlCommand("checkGames"))
-                {
-                    checkGames.CommandType = CommandType.StoredProcedure;
-                    using (SqlDataAdapter scheckGames = new SqlDataAdapter())
-                    {
-                        checkGames.Connection = sqlConnect;
-                        scheckGames.SelectCommand = checkGames;
-                        sqlConnect.Open();
-                        SqlDataReader reader = checkGames.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            game_id = reader.GetInt32(0);
-                            jsonLink = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_00" + game_id + ".json";
-                            try
-                            {
-                                WebRequest testRequest = WebRequest.Create(jsonLink);
-                                WebResponse testShouldWork = testRequest.GetResponse();
-                                string json = client.DownloadString(jsonLink);
-                                Root JSON = JsonConvert.DeserializeObject<Root>(json);
-                                int team_idH = reader.GetInt32(2);
-                                int team_idA = reader.GetInt32(3);
-                                int wScore = reader.GetInt32(5);
-                                int lScore = reader.GetInt32(7);
-                                if ((JSON.game.homeTeam.score != wScore || JSON.game.awayTeam.score != lScore) && (JSON.game.homeTeam.score != lScore || JSON.game.awayTeam.score != wScore))
-                                {
-                                    //UpdateGame(JSON);
-                                    gamesUpdatedInt++;
-                                }
-                            }
-                            catch (WebException e)
-                            {
-
-                            }
-                        }
-                        string gamesUpdated = gamesUpdatedInt.ToString() + " Games Updated";
-                        gamesUpdatedLbl.Text = gamesUpdated;
-                        sqlConnect.Close();
                     }
                 }
             }
@@ -203,10 +164,9 @@ namespace boxRider
             }
         }
 
-        public static void FirstBox()
+        public static void FirstBox(int start, int limit)
         {
-            int limit = 22301231;
-            for (int i = 22300001; i < limit; i++)
+            for (int i = start; i < limit; i++)
             {
                 string jsonLink = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_00" + i + ".json";
                 try
@@ -651,6 +611,38 @@ namespace boxRider
                         Insert.Close();
                     }
                 }
+            }
+        }
+
+
+
+        public static void DateFinder(int lastGame_id, string lastGameDate)
+        {
+            DateTime rightNow = DateTime.Now;
+            //Out second value sent to FirstBox will always be the greatest game_id on that particular date + 1
+            if (DateTime.Parse(lastGameDate) < DateTime.Parse("02/03/2024"))
+            {
+                FirstBox(lastGame_id, 22300698);
+            }
+            if (DateTime.Parse(lastGameDate) < DateTime.Parse("02/05/2024"))
+            {
+                FirstBox(lastGame_id, 22300719);
+            }
+            if (rightNow >= DateTime.Parse("02/05/2024") && rightNow < DateTime.Parse("02/16/2024"))
+            {
+                FirstBox(22300576, 22300792);
+            }
+            if (rightNow >= DateTime.Parse("02/16/2024") && rightNow < DateTime.Parse("02/19/2024"))
+            {
+                FirstBox(32300001, 32300007);
+            }
+            if (rightNow >= DateTime.Parse("02/19/2024") && rightNow < DateTime.Parse("03/01/2024"))
+            {
+                FirstBox(22300792, 22300857);
+            }
+            if (rightNow >= DateTime.Parse("03/01/2024") && rightNow < DateTime.Parse("03/16/2024"))
+            {
+                FirstBox(lastGame_id, 22300967);
             }
         }
     }
