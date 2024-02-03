@@ -13,13 +13,15 @@ using Antlr.Runtime.Misc;
 using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Microsoft.SqlServer.Server;
+using nbaJSON;
 
 namespace playoffRider
 {
     public partial class playoffRider
     {
+        Bus_Driver bus_Driver = new Bus_Driver();
         static WebClient client = new WebClient { Encoding = System.Text.Encoding.UTF8 };
-        static SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+        static SqlConnection SQL = new SqlConnection(Bus_Driver.ConnectionString);
         public static void init()
         {
             GetPicture();
@@ -62,7 +64,7 @@ namespace playoffRider
         }
         public static void CheckPicture(Root JSON)
         {
-            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection SQL = new SqlConnection(Bus_Driver.ConnectionString);
             using (SQL)
             {
                 using (SqlCommand CheckPicture = new SqlCommand("checkPicture"))
@@ -87,7 +89,7 @@ namespace playoffRider
         public static void CheckBracket(Root JSON)
         {
             //If there arent any results
-            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection SQL = new SqlConnection(Bus_Driver.ConnectionString);
             using (SQL)
             {
                 using (SqlCommand CheckBracket = new SqlCommand("checkBracket"))
@@ -113,7 +115,7 @@ namespace playoffRider
         public static void UpdatePicture(Root JSON)
         {
             int count = JSON.bracket.playoffPictureSeries.Count();
-            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection SQL = new SqlConnection(Bus_Driver.ConnectionString);
             using (SQL)
             {
                 for (int i = 0; i < count; i++)
@@ -220,7 +222,7 @@ namespace playoffRider
         }
         public static void PostBlankBracket(Root JSON)
         {
-            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection SQL = new SqlConnection(Bus_Driver.ConnectionString);
             int count = JSON.bracket.playoffBracketSeries.Count();
             using (SQL)
             {
@@ -259,7 +261,7 @@ namespace playoffRider
         }
         public static void PostBracket(Root JSON)
         {
-            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection SQL = new SqlConnection(Bus_Driver.ConnectionString);
             int count = JSON.bracket.playoffBracketSeries.Count();
             using (SQL)
             {
@@ -319,7 +321,7 @@ namespace playoffRider
         public static void UpdateBracket(Root JSON)
         {
             int count = JSON.bracket.playoffBracketSeries.Count();
-            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection SQL = new SqlConnection(Bus_Driver.ConnectionString);
             using (SQL)
             {
                 for (int i = 0; i < count; i++)

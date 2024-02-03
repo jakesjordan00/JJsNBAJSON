@@ -13,14 +13,15 @@ using Antlr.Runtime.Misc;
 using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Microsoft.SqlServer.Server;
+using nbaJSON;
 
 namespace earlyBird
 {
     public partial class earlyBird
     {
-        public static void LoadCheck()
+        public static void LoadCheck(Label statusL)
         {
-            SqlConnection DupeCheckConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
             {
                 using (DupeCheckConnect)
                 {
@@ -36,6 +37,13 @@ namespace earlyBird
                             if (!reader.HasRows)
                             {
                                 FirstLoad();
+                                statusL.ForeColor = System.Drawing.Color.LightSeaGreen;
+                                statusL.Text = "Database has been successfully loaded!";
+                            }
+                            else
+                            {
+                                statusL.ForeColor = System.Drawing.Color.Red;
+                                statusL.Text = "Error 1. Database has already loaded for first time";
                             }
                         }
                     }
@@ -120,7 +128,7 @@ namespace earlyBird
 
         public static void ArenaCheck(Root JSON, int arena_id)
         {
-            SqlConnection DupeCheckConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
             {
                 using (DupeCheckConnect)
                 {
@@ -146,7 +154,7 @@ namespace earlyBird
 
         public static void TeamCheck(Root JSON, int team_id)
         {
-            SqlConnection DupeCheckConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
             {
                 using (DupeCheckConnect)
                 {
@@ -171,7 +179,7 @@ namespace earlyBird
         }
         public static void HomePlayerCheck(Root JSON, int player_id, int j)
         {
-            SqlConnection DupeCheckConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
             {
                 using (DupeCheckConnect)
                 {
@@ -202,7 +210,7 @@ namespace earlyBird
 
         public static void AwayPlayerCheck(Root JSON, int player_id, int j)
         {
-            SqlConnection DupeCheckConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
             {
                 using (DupeCheckConnect)
                 {
@@ -233,7 +241,7 @@ namespace earlyBird
 
         public static void OfficialCheck(Root JSON, int official_id, int j)
         {
-            SqlConnection DupeCheckConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
             {
                 using (DupeCheckConnect)
                 {
@@ -258,7 +266,7 @@ namespace earlyBird
         }
         public static void GameCheck(Root JSON, int game_id, int hScore, int aScore)
         {
-            SqlConnection DupeCheckConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
             {
                 using (DupeCheckConnect)
                 {
@@ -293,7 +301,7 @@ namespace earlyBird
 
         public static void ArenaPost(Root JSON, int arena_id)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("arenaInsert"))
@@ -317,7 +325,7 @@ namespace earlyBird
         
         public static void TeamPost(Root JSON, int team_id)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("teamInsert"))
@@ -348,7 +356,7 @@ namespace earlyBird
         
         public static void HomePlayerPost(Root JSON, int player_id, int j)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("playerInsert"))
@@ -380,7 +388,7 @@ namespace earlyBird
 
         public static void AwayPlayerPost(Root JSON, int player_id, int j)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("playerInsert"))
@@ -413,7 +421,7 @@ namespace earlyBird
 
         public static void OfficialPost(Root JSON, int official_id, int j)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("officialInsert"))
@@ -433,7 +441,7 @@ namespace earlyBird
 
         public static void GamePost(Root JSON, int game_id, int hScore, int aScore)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("gameInsert"))
@@ -469,7 +477,7 @@ namespace earlyBird
 
         public static void GameUpdate(Root JSON, int game_id, int hScore, int aScore)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("gameUpdate"))
@@ -501,7 +509,7 @@ namespace earlyBird
 
         public static void PlayerUpdate(int player_id, string position, string oldPosition)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("playerUpdate"))

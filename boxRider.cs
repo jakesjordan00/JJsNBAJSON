@@ -32,7 +32,7 @@ namespace boxRider
             int lastGame_id = 0;
             int checkGame_id = 0;
             int game_id = 0;
-            SqlConnection sqlConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection sqlConnect = new SqlConnection(Bus_Driver.ConnectionString);
             using (sqlConnect)
             {
                 using (SqlCommand firstGameSQL = new SqlCommand("firstBox"))
@@ -168,7 +168,7 @@ namespace boxRider
 
         public static void DeleteFirstHome(Root JSON, int game_id, int team_id)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("deleteFirst"))
@@ -186,7 +186,7 @@ namespace boxRider
         }
         public static void DeleteFirstAway(Root JSON, int game_id, int team_id) 
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("deleteFirst"))
@@ -226,7 +226,7 @@ namespace boxRider
         }
         public static void GameInsert(Root JSON)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("teamBoxInsert"))
@@ -494,7 +494,7 @@ namespace boxRider
             {
                 //Statistics statsH = JSON.game.homeTeam.players[i].Statistics;
                 //Statistics statsA = JSON.game.awayTeam.players[i].Statistics;
-                SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+                SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
                 using (Insert)
                 {
                     using (SqlCommand InsertDataAway = new SqlCommand("playerBoxInsert"))
@@ -577,7 +577,7 @@ namespace boxRider
             {
                 //Statistics statsH = JSON.game.homeTeam.players[i].Statistics;
                 //Statistics statsA = JSON.game.awayTeam.players[i].Statistics;
-                SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+                SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
                 using (Insert)
                 {
                     using (SqlCommand InsertData = new SqlCommand("playerBoxInsert"))

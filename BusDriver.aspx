@@ -54,6 +54,14 @@
         </div>
     </div>
 </div>
+<div class="table">
+     <div class="row" style="height:35px">
+         <label style="font-size:x-large">Database Monitoring</label>
+    </div>
+     <div class="row" style="height:150px">
+         <asp:Label  id="statusL" style="font-size:large;" runat="server" Font-Size="Large" Font-Bold="true"></asp:Label>
+    </div>
+</div>
 
         <div class="row">
             

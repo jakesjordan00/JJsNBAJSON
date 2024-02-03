@@ -32,7 +32,7 @@ namespace gameRider
             string jsonLink = "";
             int lastGame_id = 0;
             int game_id = 0;
-            SqlConnection sqlConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection sqlConnect = new SqlConnection(Bus_Driver.ConnectionString);
             using (sqlConnect)
             {
                 using (SqlCommand lastGame = new SqlCommand("lastGame"))
@@ -137,7 +137,7 @@ namespace gameRider
 
         public static void CreateGame(Root JSON)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("gameInsert"))
@@ -174,7 +174,7 @@ namespace gameRider
 
         public static void UpdateGame(Root JSON)
         {
-            SqlConnection Insert = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection Insert = new SqlConnection(Bus_Driver.ConnectionString);
             using (Insert)
             {
                 using (SqlCommand InsertData = new SqlCommand("gameUpdate"))

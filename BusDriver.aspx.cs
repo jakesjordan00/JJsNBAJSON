@@ -12,21 +12,23 @@ namespace nbaJSON
     public partial class Bus_Driver : System.Web.UI.Page
     {
         static int game = 0;
+        public global::System.Web.UI.WebControls.Label gamesCreatedLbl;
+        public global::System.Web.UI.WebControls.Label gamesUpdatedLbl;
+        public global::System.Web.UI.WebControls.Label boxCreatedLbl;
+        public global::System.Web.UI.WebControls.Label boxUpdatedLbl;
+        public global::System.Web.UI.WebControls.Label statusL;
+        public static string ConnectionString = "Server=localhost;Database=myNBA;User Id=test;Password=test123;";
         protected void Page_Load(object sender, EventArgs e)
         {
             
         }
         protected void loadB_Click(object sender, EventArgs e)
         {
-            earlyBird.earlyBird.LoadCheck();
+            earlyBird.earlyBird.LoadCheck(statusL);
         }
 
 
 
-        public global::System.Web.UI.WebControls.Label gamesCreatedLbl;
-        public global::System.Web.UI.WebControls.Label gamesUpdatedLbl;
-        public global::System.Web.UI.WebControls.Label boxCreatedLbl;
-        public global::System.Web.UI.WebControls.Label boxUpdatedLbl;
 
         protected void gameB_Click(object sender, EventArgs e)
         {
@@ -42,7 +44,7 @@ namespace nbaJSON
         protected void pbpB_Click(object sender, EventArgs e)
         {
             //Get count of games
-            SqlConnection sqlConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection sqlConnect = new SqlConnection(Bus_Driver.ConnectionString);
             using (sqlConnect)
             {
                 using (SqlCommand querySearch = new SqlCommand("jsonGames"))

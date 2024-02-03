@@ -13,11 +13,13 @@ using Antlr.Runtime.Misc;
 using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Microsoft.SqlServer.Server;
+using nbaJSON;
 
 namespace pbpRider
 {
     public partial class pbpRider
     {
+        Bus_Driver bus_Driver = new Bus_Driver();
         public static void GetGameJson(int game)
         {
             var client = new WebClient { Encoding = System.Text.Encoding.UTF8 };
@@ -32,13 +34,13 @@ namespace pbpRider
 
             }
         }
-        static void DupeCheck(string json)
+        public static void DupeCheck(string json)
         {
 
             Root JSON = JsonConvert.DeserializeObject<Root>(json);
             int actions = JSON.game.actions.Count();
             int game_id = Int32.Parse(JSON.game.gameId);
-            SqlConnection DupeCheckConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
             {
                 using (DupeCheckConnect)
                 {
@@ -70,7 +72,7 @@ namespace pbpRider
             }
         }
 
-        static void InsertGame(Root JSON, int game_id, int oldActions, int actions)
+        public static void InsertGame(Root JSON, int game_id, int oldActions, int actions)
         {
             for (int i = oldActions; i < actions; i++)
             {
@@ -125,7 +127,7 @@ namespace pbpRider
                 int? player_idJumpL = JSON.game.actions[i].jumpBallLostPersonId;
                 int? official_id = JSON.game.actions[i].officialId;
 
-                SqlConnection sqlConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+                SqlConnection sqlConnect = new SqlConnection(Bus_Driver.ConnectionString);
                 using (sqlConnect)
                 {
                     using (SqlCommand querySearch = new SqlCommand("PlayByPlayInsert"))
