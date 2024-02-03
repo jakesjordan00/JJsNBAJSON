@@ -18,7 +18,7 @@ namespace nbaJSON
         }
         protected void loadB_Click(object sender, EventArgs e)
         {
-            earlyBird.earlyBird.FirstLoad();
+            earlyBird.earlyBird.LoadCheck();
         }
 
 

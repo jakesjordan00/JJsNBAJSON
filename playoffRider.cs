@@ -46,7 +46,14 @@ namespace playoffRider
             {
                 string json = client.DownloadString(jsonLink);
                 Root JSON = JsonConvert.DeserializeObject<Root>(json);
-                CheckBracket(JSON);
+                if (JSON.bracket.playoffBracketSeries[0].highSeedId == 0)
+                {
+                    PostBlankBracket(JSON);
+                }
+                else
+                {
+                    CheckBracket(JSON);
+                }                
             }
             catch (WebException e)
             {
@@ -183,122 +190,6 @@ namespace playoffRider
                 }
             }
         }
-        //public static void UpdateBracket(Root JSON)
-        //{
-        //    int count = JSON.bracket.playoffBracketSeries.Count();
-        //    SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
-        //    using (SQL)
-        //    {
-        //        for (int i = 0; i < count; i++)
-        //        {
-        //            int highSeed_id = JSON.bracket.playoffBracketSeries[i].highSeedId;
-        //            int lowSeed_id = JSON.bracket.playoffBracketSeries[i].lowSeedId;
-        //            string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Remove(0, 3).Remove(1, 2).Replace(lowSeed_id.ToString(), "").Replace(highSeed_id.ToString(), "").Insert(3, "00").Replace("_", "");
-        //            using (SqlCommand UpdateBracketCheck = new SqlCommand("updateBracketCheck"))
-        //            {
-        //                UpdateBracketCheck.Connection = SQL;
-        //                UpdateBracketCheck.CommandType = CommandType.StoredProcedure;
-        //                UpdateBracketCheck.Parameters.AddWithValue("@series_id", series_id);
-        //                UpdateBracketCheck.Parameters.AddWithValue("@conference", JSON.bracket.playoffBracketSeries[i].seriesConference);
-        //                UpdateBracketCheck.Parameters.AddWithValue("@roundNumber", JSON.bracket.playoffBracketSeries[i].roundNumber);
-        //                UpdateBracketCheck.Parameters.AddWithValue("@description", JSON.bracket.playoffBracketSeries[i].seriesText);
-        //                UpdateBracketCheck.Parameters.AddWithValue("@status", JSON.bracket.playoffBracketSeries[i].seriesStatus);
-        //                UpdateBracketCheck.Parameters.AddWithValue("@seriesWinner", JSON.bracket.playoffBracketSeries[i].seriesWinner);
-        //                UpdateBracketCheck.Parameters.AddWithValue("@highSeed_id", JSON.bracket.playoffBracketSeries[i].highSeedId);
-        //                UpdateBracketCheck.Parameters.AddWithValue("@highSeedSeriesWins", JSON.bracket.playoffBracketSeries[i].highSeedSeriesWins);
-        //                UpdateBracketCheck.Parameters.AddWithValue("@lowSeed_id", JSON.bracket.playoffBracketSeries[i].lowSeedId);
-        //                UpdateBracketCheck.Parameters.AddWithValue("@lowSeedSeriesWins", JSON.bracket.playoffBracketSeries[i].lowSeedSeriesWins);
-        //                if (JSON.bracket.playoffBracketSeries[i].nextGameId.ToString() == "")
-        //                {
-        //                    UpdateBracketCheck.Parameters.AddWithValue("@nextGame_id", 0);
-        //                    UpdateBracketCheck.Parameters.AddWithValue("@nextGameNumber", 0);
-        //                }
-        //                else
-        //                {
-        //                    UpdateBracketCheck.Parameters.AddWithValue("@nextGame_id", JSON.bracket.playoffBracketSeries[i].nextGameId);
-        //                    UpdateBracketCheck.Parameters.AddWithValue("@nextGameNumber", JSON.bracket.playoffBracketSeries[i].nextGameNumber);
-        //                }
-        //                UpdateBracketCheck.Parameters.AddWithValue("@nextSeries_id", 0); //Need to fill placeholder
-        //                SQL.Open();
-        //                SqlDataReader reader = UpdateBracketCheck.ExecuteReader();
-        //                if (reader.Read())
-        //                {
-        //                    SQL.Close();
-        //                    using (SqlCommand UpdateBracket = new SqlCommand("updateBracket"))
-        //                    {
-        //                        UpdateBracket.Connection = SQL;
-        //                        UpdateBracket.CommandType = CommandType.StoredProcedure;
-        //                        UpdateBracket.Parameters.AddWithValue("@series_id", series_id);
-        //                        UpdateBracket.Parameters.AddWithValue("@conference", JSON.bracket.playoffBracketSeries[i].seriesConference);
-        //                        UpdateBracket.Parameters.AddWithValue("@roundNumber", JSON.bracket.playoffBracketSeries[i].roundNumber);
-        //                        UpdateBracket.Parameters.AddWithValue("@description", JSON.bracket.playoffBracketSeries[i].seriesText);
-        //                        UpdateBracket.Parameters.AddWithValue("@status", JSON.bracket.playoffBracketSeries[i].seriesStatus);
-        //                        UpdateBracket.Parameters.AddWithValue("@seriesWinner", JSON.bracket.playoffBracketSeries[i].seriesWinner);
-        //                        UpdateBracket.Parameters.AddWithValue("@highSeed_id", JSON.bracket.playoffBracketSeries[i].highSeedId);
-        //                        UpdateBracket.Parameters.AddWithValue("@highSeedSeriesWins", JSON.bracket.playoffBracketSeries[i].highSeedSeriesWins);
-        //                        UpdateBracket.Parameters.AddWithValue("@lowSeed_id", JSON.bracket.playoffBracketSeries[i].lowSeedId);
-        //                        UpdateBracket.Parameters.AddWithValue("@lowSeedSeriesWins", JSON.bracket.playoffBracketSeries[i].lowSeedSeriesWins);
-        //                        if (JSON.bracket.playoffBracketSeries[i].nextGameId.ToString() == "")
-        //                        {
-        //                            UpdateBracket.Parameters.AddWithValue("@nextGame_id", 0);
-        //                            UpdateBracket.Parameters.AddWithValue("@nextGameNumber", 0);
-        //                        }
-        //                        else
-        //                        {
-        //                            UpdateBracket.Parameters.AddWithValue("@nextGame_id", JSON.bracket.playoffBracketSeries[i].nextGameId);
-        //                            UpdateBracket.Parameters.AddWithValue("@nextGameNumber", JSON.bracket.playoffBracketSeries[i].nextGameNumber);
-        //                        }
-        //                        UpdateBracket.Parameters.AddWithValue("@nextSeries_id", 0); //Need to fill placeholder
-        //                        SQL.Open();
-        //                        UpdateBracket.ExecuteScalar();
-        //                        SQL.Close();
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    SQL.Close();
-        //                    using (SqlCommand UpdateBracketCheckEntry = new SqlCommand("updateBracketCheckEntry"))
-        //                    {
-        //                        UpdateBracketCheckEntry.Connection = SQL;
-        //                        UpdateBracketCheckEntry.CommandType = CommandType.StoredProcedure;
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@series_id", series_id);
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@conference", JSON.bracket.playoffBracketSeries[i].seriesConference);
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@roundNumber", JSON.bracket.playoffBracketSeries[i].roundNumber);
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@description", JSON.bracket.playoffBracketSeries[i].seriesText);
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@status", JSON.bracket.playoffBracketSeries[i].seriesStatus);
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@seriesWinner", JSON.bracket.playoffBracketSeries[i].seriesWinner);
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@highSeed_id", JSON.bracket.playoffBracketSeries[i].highSeedId);
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@highSeedSeriesWins", JSON.bracket.playoffBracketSeries[i].highSeedSeriesWins);
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@lowSeed_id", JSON.bracket.playoffBracketSeries[i].lowSeedId);
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@lowSeedSeriesWins", JSON.bracket.playoffBracketSeries[i].lowSeedSeriesWins);
-        //                        if(JSON.bracket.playoffBracketSeries[i].nextGameId.ToString() == "")
-        //                        {
-        //                            UpdateBracketCheckEntry.Parameters.AddWithValue("@nextGame_id", 0);
-        //                            UpdateBracketCheckEntry.Parameters.AddWithValue("@nextGameNumber", 0);
-        //                        }
-        //                        else
-        //                        {
-        //                            UpdateBracketCheckEntry.Parameters.AddWithValue("@nextGame_id", JSON.bracket.playoffBracketSeries[i].nextGameId);
-        //                            UpdateBracketCheckEntry.Parameters.AddWithValue("@nextGameNumber", JSON.bracket.playoffBracketSeries[i].nextGameNumber);
-        //                        }
-        //                        UpdateBracketCheckEntry.Parameters.AddWithValue("@nextSeries_id", 0); //Need to fill placeholder
-        //                        SQL.Open();
-        //                        SqlDataReader reader1 = UpdateBracketCheckEntry.ExecuteReader();
-        //                        if (reader1.Read())
-        //                        {
-        //                            SQL.Close();
-        //                        }
-        //                        else
-        //                        {
-        //                            SQL.Close();
-        //                            PostBracket(JSON);
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
         public static void PostPicture(Root JSON)
         {
             int count = JSON.bracket.playoffPictureSeries.Count();
@@ -327,6 +218,45 @@ namespace playoffRider
                 }
             }
         }
+        public static void PostBlankBracket(Root JSON)
+        {
+            SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            int count = JSON.bracket.playoffBracketSeries.Count();
+            using (SQL)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Remove(0, 3).Remove(1, 2).Replace("0000000000", "").Insert(3, "00").Replace("_", "");
+                    using (SqlCommand BlankCheck = new SqlCommand("blackBracketCheck"))
+                    {
+                        BlankCheck.Connection = SQL;
+                        BlankCheck.CommandType = CommandType.StoredProcedure;
+                        BlankCheck.Parameters.AddWithValue("@series_id", series_id);
+                        SQL.Open();
+                        SqlDataReader reader1 = BlankCheck.ExecuteReader();
+                        if (reader1.Read())
+                        {
+                            SQL.Close();
+                        }
+                        else
+                        {
+                            using (SqlCommand InsertData = new SqlCommand("blankBracketInsert"))
+                            {
+                                InsertData.Connection = SQL;
+                                InsertData.CommandType = CommandType.StoredProcedure;
+                                InsertData.Parameters.AddWithValue("@series_id", series_id);
+                                InsertData.Parameters.AddWithValue("@conference", JSON.bracket.playoffBracketSeries[i].seriesConference);
+                                InsertData.Parameters.AddWithValue("@roundNumber", JSON.bracket.playoffBracketSeries[i].roundNumber);
+                                InsertData.Parameters.AddWithValue("@status", JSON.bracket.playoffBracketSeries[i].seriesStatus);
+                                SQL.Open();
+                                InsertData.ExecuteScalar();
+                                SQL.Close();
+                            }
+                        }
+                    }
+                }
+            } 
+        }
         public static void PostBracket(Root JSON)
         {
             SqlConnection SQL = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
@@ -335,34 +265,48 @@ namespace playoffRider
             {
                 for (int i = 0; i < count; i++)
                 {
-                    using (SqlCommand InsertData = new SqlCommand("bracketInsert"))
+                    int highSeed_id = JSON.bracket.playoffBracketSeries[i].highSeedId;
+                    int lowSeed_id = JSON.bracket.playoffBracketSeries[i].lowSeedId;
+                    string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Remove(0, 3).Remove(1, 2).Replace(lowSeed_id.ToString(), "").Replace(highSeed_id.ToString(), "").Insert(3, "00").Replace("_", "");
+                    using (SqlCommand BlankCheck = new SqlCommand("blackBracketCheck"))
                     {
-                        int highSeed_id = JSON.bracket.playoffBracketSeries[i].highSeedId;
-                        int lowSeed_id = JSON.bracket.playoffBracketSeries[i].lowSeedId;
-                        string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Remove(0, 3).Remove(1, 2).Replace(lowSeed_id.ToString(), "").Replace(highSeed_id.ToString(), "").Insert(3, "00").Replace("_", "");
-                        //series_id = series_id.Remove(0, 3).Remove(1, 2);
-                        //series_id = series_id.Replace(lowSeed_id.ToString(), "").Replace(highSeed_id.ToString(), "");
-                        //series_id = series_id.Insert(3, "00").Replace("_", "");
-                        InsertData.Connection = SQL;
-                        InsertData.CommandType = CommandType.StoredProcedure;
-                        InsertData.Parameters.AddWithValue("@series_id",                    series_id);
-                        InsertData.Parameters.AddWithValue("@conference",                   JSON.bracket.playoffBracketSeries[i].seriesConference);
-                        InsertData.Parameters.AddWithValue("@roundNumber",                  JSON.bracket.playoffBracketSeries[i].roundNumber);
-                        InsertData.Parameters.AddWithValue("@description",                  JSON.bracket.playoffBracketSeries[i].seriesText);
-                        InsertData.Parameters.AddWithValue("@status",                       JSON.bracket.playoffBracketSeries[i].seriesStatus);
-                        InsertData.Parameters.AddWithValue("@seriesWinner",                 JSON.bracket.playoffBracketSeries[i].seriesWinner);
-                        InsertData.Parameters.AddWithValue("@highSeed_id",                  JSON.bracket.playoffBracketSeries[i].highSeedId);
-                        InsertData.Parameters.AddWithValue("@highSeedSeriesWins",           JSON.bracket.playoffBracketSeries[i].highSeedSeriesWins);
-                        InsertData.Parameters.AddWithValue("@lowSeed_id",                   JSON.bracket.playoffBracketSeries[i].lowSeedId);
-                        InsertData.Parameters.AddWithValue("@lowSeedSeriesWins",            JSON.bracket.playoffBracketSeries[i].lowSeedSeriesWins);
-                        InsertData.Parameters.AddWithValue("@nextGame_id",                  JSON.bracket.playoffBracketSeries[i].nextGameId);
-                        InsertData.Parameters.AddWithValue("@nextGameNumber",               JSON.bracket.playoffBracketSeries[i].nextGameNumber);
-                        InsertData.Parameters.AddWithValue("@nextSeries_id",                0); //Need to fill placeholder
-                        
+                        BlankCheck.Connection = SQL;
+                        BlankCheck.CommandType = CommandType.StoredProcedure;
+                        BlankCheck.Parameters.AddWithValue("@series_id", series_id);
                         SQL.Open();
-                        InsertData.ExecuteScalar();
-                        SQL.Close();
+                        SqlDataReader reader1 = BlankCheck.ExecuteReader();
+                        if (reader1.Read())
+                        {
+                            SQL.Close();
+                        }
+                        else
+                        {
+                            SQL.Close();
+                            using (SqlCommand InsertData = new SqlCommand("bracketInsert"))
+                            {
+                                InsertData.Connection = SQL;
+                                InsertData.CommandType = CommandType.StoredProcedure;
+                                InsertData.Parameters.AddWithValue("@series_id", series_id);
+                                InsertData.Parameters.AddWithValue("@conference", JSON.bracket.playoffBracketSeries[i].seriesConference);
+                                InsertData.Parameters.AddWithValue("@roundNumber", JSON.bracket.playoffBracketSeries[i].roundNumber);
+                                InsertData.Parameters.AddWithValue("@description", JSON.bracket.playoffBracketSeries[i].seriesText);
+                                InsertData.Parameters.AddWithValue("@status", JSON.bracket.playoffBracketSeries[i].seriesStatus);
+                                InsertData.Parameters.AddWithValue("@seriesWinner", JSON.bracket.playoffBracketSeries[i].seriesWinner);
+                                InsertData.Parameters.AddWithValue("@highSeed_id", JSON.bracket.playoffBracketSeries[i].highSeedId);
+                                InsertData.Parameters.AddWithValue("@highSeedSeriesWins", JSON.bracket.playoffBracketSeries[i].highSeedSeriesWins);
+                                InsertData.Parameters.AddWithValue("@lowSeed_id", JSON.bracket.playoffBracketSeries[i].lowSeedId);
+                                InsertData.Parameters.AddWithValue("@lowSeedSeriesWins", JSON.bracket.playoffBracketSeries[i].lowSeedSeriesWins);
+                                InsertData.Parameters.AddWithValue("@nextGame_id", JSON.bracket.playoffBracketSeries[i].nextGameId);
+                                InsertData.Parameters.AddWithValue("@nextGameNumber", JSON.bracket.playoffBracketSeries[i].nextGameNumber);
+                                InsertData.Parameters.AddWithValue("@nextSeries_id", 0); //Need to fill placeholder
+
+                                SQL.Open();
+                                InsertData.ExecuteScalar();
+                                SQL.Close();
+                            }
+                        }
                     }
+                    
                 }
             }
         }

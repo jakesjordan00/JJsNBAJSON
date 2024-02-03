@@ -18,37 +18,56 @@ namespace earlyBird
 {
     public partial class earlyBird
     {
-        static List<int> teams = new List<int>
+        public static void LoadCheck()
         {
-            0, 1, 2
-        };
-        
+            SqlConnection DupeCheckConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
+            {
+                using (DupeCheckConnect)
+                {
+                    using (SqlCommand DupeSearch = new SqlCommand("loadCheck"))
+                    {
+                        DupeSearch.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter sDupeSearch = new SqlDataAdapter())
+                        {
+                            DupeSearch.Connection = DupeCheckConnect;
+                            sDupeSearch.SelectCommand = DupeSearch;
+                            DupeCheckConnect.Open();
+                            SqlDataReader reader = DupeSearch.ExecuteReader();
+                            if (!reader.HasRows)
+                            {
+                                FirstLoad();
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         public static void FirstLoad()
         {
-            for (int i = 1; i <= 1250; i++)
+            for (int i = 22300001; i <= 22301250; i++)
             {
                 string game = "";
                 var client = new WebClient { Encoding = System.Text.Encoding.UTF8 };
                 string jsonLink = "";
-                if (i < 10)
+                if (i < 22300010)
                 {
-                    game = "2230000" + i.ToString();
+                    game = i.ToString();
                     jsonLink = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_00" + game + ".json";
                 }
-                if (i >= 10 && i < 100)
+                if (i >= 22300010 && i < 22300100)
                 {
-                    game = "223000" + i.ToString();
+                    game = i.ToString();
                     jsonLink = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_00" + game + ".json";
                 }
-                if (i >= 100 && i < 1000)
+                if (i >= 22300100 && i < 22301000)
                 {
-                    game = "22300" + i.ToString();
+                    game = i.ToString();
                     jsonLink = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_00" + game + ".json";
                 }
-                if (i >= 1000 && i < 1251)
+                if (i >= 22301000 && i < 22301251)
                 {
-                    game = "2230" + i.ToString();
+                    game = i.ToString();
                     jsonLink = "https://cdn.nba.com/static/json/liveData/boxscore/boxscore_00" + game + ".json";
                 }
                 try

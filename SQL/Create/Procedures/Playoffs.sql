@@ -154,7 +154,7 @@ lowSeed_id				!= @lowSeed_id				or
 lowSeedSeriesWins		!= @lowSeedSeriesWins		or
 nextGame_id				!= @nextGame_id				or
 nextGameNumber			!= @nextGameNumber			or
-nextSeries_id			!= @nextSeries_id)
+nextSeries_id			!= @nextSeries_id) and description is not null
 go
 
 create procedure updateBracket
@@ -256,3 +256,35 @@ nextGameNumber			= @nextGameNumber			and
 nextSeries_id			= @nextSeries_id
 go
 
+create procedure blankBracketInsert 
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@status					int		
+as
+insert into PlayoffBracket (series_id, conference, roundNumber, status)
+values(
+@series_id			,
+@conference			,
+@roundNumber		,
+@status)
+go
+
+create procedure blackBracketCheck @series_id int
+as
+select * from PlayoffBracket where series_id = @series_id
+go
+
+create procedure blankBracketInsert 
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@status					int		
+as
+insert into PlayoffBracket (series_id, conference, roundNumber, status)
+values(
+@series_id			,
+@conference			,
+@roundNumber		,
+@status)
+go
