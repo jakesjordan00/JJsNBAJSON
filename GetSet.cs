@@ -18,6 +18,36 @@ namespace GetSet
 {
     public partial class GetSet
     {
+        public static void BusTicket(string? ticket)
+        {
+            if(ticket == "First Time")
+            {
+                test(ticket3: "xd");
+            }
+            else if(ticket == "Games")
+            {
+
+            }
+            else if (ticket == "Box Score")
+            {
+
+            }
+            else if (ticket == "Play by Play")
+            {
+
+            }
+            else if (ticket == "Playoffs")
+            {
+
+            }
+        }
+
+        public  static void test(string? ticket, string? ticket2, string? ticket1, string? ticket3)
+        {
+
+        }
+
+
         ///<<< JJ >>>                 PlayByPlay Classes         PlayByPlay Classes
         ///<<<<<<<<<<<<<<<<<<        JJ's NBA JSON Parser        >>>>>>>>>>>>>>>>>>
         ///<<< JJ >>>                 PlayByPlay Classes         PlayByPlay Classes

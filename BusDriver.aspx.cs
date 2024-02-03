@@ -12,35 +12,38 @@ namespace nbaJSON
     public partial class Bus_Driver : System.Web.UI.Page
     {
         static int game = 0;
+        public global::System.Web.UI.WebControls.Label gamesCreatedLbl;
+        public global::System.Web.UI.WebControls.Label gamesUpdatedLbl;
+        public global::System.Web.UI.WebControls.Label boxCreatedLbl;
+        public global::System.Web.UI.WebControls.Label boxUpdatedLbl;
         protected void Page_Load(object sender, EventArgs e)
         {
             
         }
         protected void loadB_Click(object sender, EventArgs e)
         {
-            earlyBird.earlyBird.FirstLoad();
+            GetSet.GetSet.BusTicket("First Time");
         }
 
 
 
-        public global::System.Web.UI.WebControls.Label gamesCreatedLbl;
-        public global::System.Web.UI.WebControls.Label gamesUpdatedLbl;
-        public global::System.Web.UI.WebControls.Label boxCreatedLbl;
-        public global::System.Web.UI.WebControls.Label boxUpdatedLbl;
 
         protected void gameB_Click(object sender, EventArgs e)
         {
             gameRider.gameRider.CheckGames(gamesCreatedLbl, gamesUpdatedLbl);
+            GetSet.GetSet.BusTicket("Games");
         }
 
         protected void boxB_Click(object sender, EventArgs e)
         {
             boxRider.boxRider.CheckGames(boxCreatedLbl, boxUpdatedLbl);
+            GetSet.GetSet.BusTicket("Box Score");
         }
 
 
         protected void pbpB_Click(object sender, EventArgs e)
         {
+            GetSet.GetSet.BusTicket("Play by Play");
             //Get count of games
             SqlConnection sqlConnect = new SqlConnection("Server=localhost;Database=myNBA;User Id=test;Password=test123;");
             using (sqlConnect)
@@ -71,6 +74,7 @@ namespace nbaJSON
 
         protected void playoffB_Click(object sender, EventArgs e)
         {
+            GetSet.GetSet.BusTicket("Playoffs");
             playoffRider.playoffRider.init();
         }
     }
