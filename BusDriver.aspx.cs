@@ -12,11 +12,30 @@ namespace nbaJSON
     public partial class Bus_Driver : System.Web.UI.Page
     {
         static int game = 0;
-        public global::System.Web.UI.WebControls.Label gamesCreatedLbl;
-        public global::System.Web.UI.WebControls.Label gamesUpdatedLbl;
-        public global::System.Web.UI.WebControls.Label boxCreatedLbl;
-        public global::System.Web.UI.WebControls.Label boxUpdatedLbl;
         public global::System.Web.UI.WebControls.Label statusL;
+        public global::System.Web.UI.HtmlControls.HtmlGenericControl gameColumnC;
+        public global::System.Web.UI.WebControls.Label gamesCreatedLbl;
+        public global::System.Web.UI.HtmlControls.HtmlGenericControl gameColumnU;
+        public global::System.Web.UI.WebControls.Label gamesUpdatedLbl;
+
+        public global::System.Web.UI.HtmlControls.HtmlGenericControl teamColumnC;
+        public global::System.Web.UI.WebControls.Label boxTeamsCreatedLbl;
+        public global::System.Web.UI.HtmlControls.HtmlGenericControl teamColumnU;
+        public global::System.Web.UI.WebControls.Label boxTeamsUpdatedLbl;
+
+        public global::System.Web.UI.HtmlControls.HtmlGenericControl homePlayerColumnC;
+        public global::System.Web.UI.WebControls.Label boxHomePlayersCreatedLbl;
+        public global::System.Web.UI.HtmlControls.HtmlGenericControl homePlayerColumnU;
+        public global::System.Web.UI.WebControls.Label boxHomePlayersUpdatedLbl;
+
+        public global::System.Web.UI.HtmlControls.HtmlGenericControl AwayPlayerColumnC;
+        public global::System.Web.UI.WebControls.Label boxAwayPlayersCreatedLbl;
+        public global::System.Web.UI.HtmlControls.HtmlGenericControl AwayPlayerColumnU;
+        public global::System.Web.UI.WebControls.Label boxAwayPlayersUpdatedLbl;
+
+
+
+
         public static string ConnectionString = "Server=localhost;Database=myNBA;User Id=test;Password=test123;";
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -33,11 +52,32 @@ namespace nbaJSON
         protected void gameB_Click(object sender, EventArgs e)
         {
             gameRider.gameRider.CheckGames(gamesCreatedLbl, gamesUpdatedLbl);
+            gameColumnC.Visible = true;
+            gamesCreatedLbl.Visible = true;
+            gameColumnU.Visible = true;
+            gamesUpdatedLbl.Visible = true;
+
         }
 
         protected void boxB_Click(object sender, EventArgs e)
         {
-            boxRider.boxRider.CheckGames(boxCreatedLbl, boxUpdatedLbl);
+            boxRider.boxRider.CheckGames(gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
+            gameColumnC.Visible = true;
+            gamesCreatedLbl.Visible = true;
+            gameColumnU.Visible = true;
+            gamesUpdatedLbl.Visible = true;
+            teamColumnC.Visible = true;
+            boxTeamsCreatedLbl.Visible = true;
+            teamColumnU.Visible = true;
+            boxTeamsUpdatedLbl.Visible = true;
+            homePlayerColumnC.Visible = true;
+            boxHomePlayersCreatedLbl.Visible = true;
+            homePlayerColumnU.Visible = true;
+            boxHomePlayersUpdatedLbl.Visible = true;
+            AwayPlayerColumnC.Visible = true;
+            boxAwayPlayersCreatedLbl.Visible = true;
+            AwayPlayerColumnU.Visible = true;
+            boxAwayPlayersUpdatedLbl.Visible = true;
         }
 
 

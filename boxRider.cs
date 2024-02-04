@@ -22,8 +22,14 @@ namespace boxRider
     {
         static int gamesCreatedInt = 0;
         static int gamesUpdatedInt = 0;
+        static int teamsCreatedInt = 0;
+        static int teamsUpdatedInt = 0;
+        static int homePlayersCreatedInt = 0;
+        static int homePlayersUpdatedInt = 0;
+        static int awayPlayersCreatedInt = 0;
+        static int awayPlayersUpdatedInt = 0;
         Bus_Driver bus_Driver = new Bus_Driver();
-        public static void CheckGames(Label gamesCreatedLbl, Label gamesUpdatedLbl)
+        public static void CheckGames(Label gamesCreatedLbl, Label gamesUpdatedLbl, Label boxTeamsCreatedLbl, Label boxTeamsUpdatedLbl, Label boxHomePlayersCreatedLbl, Label boxHomePlayersUpdatedLbl, Label boxAwayPlayersCreatedLbl, Label boxAwayPlayersUpdatedLbl)
         {
             gamesCreatedLbl.Text = "";
             gamesUpdatedLbl.Text = "";
@@ -47,7 +53,7 @@ namespace boxRider
                         if (!reader.Read())
                         {
                             sqlConnect.Close();
-                            FirstBox(22300001, 22301231);
+                            FirstBox(22300001, 22301231, gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
                         }
                         else
                         {
@@ -74,12 +80,17 @@ namespace boxRider
                                             if(reader1.GetInt32(4) == 1 && reader1.GetInt32(3) != JSON.game.homeTeam.score)
                                             {
                                                 DeleteFirstHome(JSON, checkGame_id, JSON.game.homeTeam.teamId);
+                                                teamsUpdatedInt++;
                                             }
                                             if (reader1.GetInt32(4) == 0 && reader1.GetInt32(3) != JSON.game.awayTeam.score)
                                             {
                                                 DeleteFirstAway(JSON, checkGame_id, JSON.game.awayTeam.teamId);
+                                                teamsUpdatedInt++;
                                             }
-                                            //CreateGameLoop(checkGame_id, checkGameDate);
+                                            if ((reader1.GetInt32(4) == 0 && reader1.GetInt32(3) != JSON.game.awayTeam.score) || (reader1.GetInt32(4) == 1 && reader1.GetInt32(3) != JSON.game.homeTeam.score))
+                                            {
+                                                gamesUpdatedInt++;
+                                            }
                                         }
                                         catch (WebException e)
                                         {
@@ -87,6 +98,39 @@ namespace boxRider
                                         }
                                     }
                                     sqlConnect.Close();
+                                    //Add Label here for games, teams and players updated
+                                    if (gamesUpdatedInt == 0)
+                                    {
+                                        gamesUpdatedLbl.ForeColor = System.Drawing.Color.DarkGoldenrod;
+                                        gamesUpdatedLbl.Text = "Program run successfully, but no games found needing updates.";
+                                    }
+                                    else
+                                    {
+                                        gamesUpdatedLbl.ForeColor = System.Drawing.Color.Green;
+                                        gamesUpdatedLbl.Text = "Program run successfully, " + gamesUpdatedInt.ToString() + " games updated!";
+                                        if (teamsUpdatedInt > 0)
+                                        {
+                                            boxTeamsUpdatedLbl.ForeColor = System.Drawing.Color.Green;
+                                            if (teamsUpdatedInt == 1)
+                                            {
+                                                boxTeamsUpdatedLbl.Text = boxTeamsUpdatedLbl.ToString() + " team was updated!";
+                                            }
+                                            if (teamsUpdatedInt > 1)
+                                            {
+                                                boxTeamsUpdatedLbl.Text = boxTeamsUpdatedLbl.ToString() + " teams were updated!";
+                                            }
+                                            if (homePlayersUpdatedInt > 0)
+                                            {
+                                                boxHomePlayersUpdatedLbl.ForeColor = System.Drawing.Color.Green;
+                                                boxHomePlayersUpdatedLbl.Text = boxHomePlayersUpdatedLbl.ToString() + " players for the home team have been updated!";
+                                            }
+                                            if (awayPlayersUpdatedInt > 0)
+                                            {
+                                                boxAwayPlayersUpdatedLbl.ForeColor = System.Drawing.Color.Green;
+                                                boxAwayPlayersUpdatedLbl.Text = boxHomePlayersUpdatedLbl.ToString() + " players for the away team have been updated!";
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             using (SqlCommand lastGame = new SqlCommand("lastBox"))
@@ -109,15 +153,13 @@ namespace boxRider
                                             string json = client.DownloadString(jsonLink);
                                             Root JSON = JsonConvert.DeserializeObject<Root>(json);
                                             string lastGameDate = JSON.game.gameTimeLocal.ToShortDateString();
-                                            DateFinder(lastGame_id, lastGameDate);
+                                            DateFinder(lastGame_id, lastGameDate, gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
                                         }
                                         catch (WebException e)
                                         {
 
                                         }
                                     }
-                                    string gamesCreated = gamesCreatedInt.ToString() + " Games Created";
-                                    gamesCreatedLbl.Text = gamesCreated;
                                     sqlConnect.Close();
                                 }
                             }
@@ -141,7 +183,7 @@ namespace boxRider
                     Insert.Open();
                     InsertData.ExecuteScalar();
                     Insert.Close();
-                    PlayerBoxInsert(JSON);
+                    PlayerBoxInsert(JSON, 1);
                 }
             }
         }
@@ -159,12 +201,12 @@ namespace boxRider
                     Insert.Open();
                     InsertData.ExecuteScalar();
                     Insert.Close();
-                    PlayerBoxInsertAway(JSON);
+                    PlayerBoxInsertAway(JSON, 1);
                 }
             }
         }
 
-        public static void FirstBox(int start, int limit)
+        public static void FirstBox(int start, int limit, Label gamesCreatedLbl, Label gamesUpdatedLbl, Label boxTeamsCreatedLbl, Label boxTeamsUpdatedLbl, Label boxHomePlayersCreatedLbl, Label boxHomePlayersUpdatedLbl, Label boxAwayPlayersCreatedLbl, Label boxAwayPlayersUpdatedLbl)
         {
             for (int i = start; i < limit; i++)
             {
@@ -177,10 +219,44 @@ namespace boxRider
                     string json = client.DownloadString(jsonLink);
                     Root JSON = JsonConvert.DeserializeObject<Root>(json);
                     GameInsert(JSON);
+                    gamesCreatedInt++;
                 }
                 catch (WebException e)
                 {
 
+                }
+            }
+            //Add Label here for games created
+            if (gamesCreatedInt == 0)
+            {
+                gamesCreatedLbl.ForeColor = System.Drawing.Color.DarkGoldenrod;
+                gamesCreatedLbl.Text = "Program run successfully, but no games found to create yet. Please try again once another game has tipped off.";
+            }
+            else
+            {
+                gamesCreatedLbl.ForeColor = System.Drawing.Color.Green;
+                gamesCreatedLbl.Text = "Program run successfully, " + gamesCreatedInt.ToString() + " games created!";
+                if (teamsCreatedInt > 0)
+                {
+                    boxTeamsCreatedLbl.ForeColor = System.Drawing.Color.Green;
+                    if (teamsCreatedInt == 1)
+                    {
+                        boxTeamsCreatedLbl.Text = boxTeamsCreatedLbl.ToString() + " team was created!";
+                    }
+                    if (teamsCreatedInt > 1)
+                    {
+                        boxTeamsCreatedLbl.Text = boxTeamsCreatedLbl.ToString() + " teams were created!";
+                    }
+                    if (homePlayersCreatedInt > 0)
+                    {
+                        boxHomePlayersCreatedLbl.ForeColor = System.Drawing.Color.Green;
+                        boxHomePlayersCreatedLbl.Text = boxHomePlayersCreatedLbl.ToString() + " players for the home team have been created!";
+                    }
+                    if (awayPlayersCreatedInt > 0)
+                    {
+                        boxAwayPlayersCreatedLbl.ForeColor = System.Drawing.Color.Green;
+                        boxAwayPlayersCreatedLbl.Text = boxHomePlayersCreatedLbl.ToString() + " players for the away team have been created!";
+                    }
                 }
             }
         }
@@ -315,7 +391,7 @@ namespace boxRider
                     Insert.Open();
                     InsertData.ExecuteScalar();
                     Insert.Close();
-                    PlayerBoxInsert(JSON);
+                    PlayerBoxInsert(JSON, 0);
                 }
                 using (SqlCommand InsertDataAway = new SqlCommand("teamBoxInsert"))
                 {
@@ -443,11 +519,11 @@ namespace boxRider
                     Insert.Open();
                     InsertDataAway.ExecuteScalar();
                     Insert.Close();
-                    PlayerBoxInsertAway(JSON);
+                    PlayerBoxInsertAway(JSON, 0);
                 }
             }
         }
-        public static void PlayerBoxInsertAway(Root JSON)
+        public static void PlayerBoxInsertAway(Root JSON, int updateCheck)
         {
             int players = JSON.game.awayTeam.players.Count;
             for (int i = 0; i < players; i++)
@@ -526,11 +602,19 @@ namespace boxRider
                         Insert.Open();
                         InsertDataAway.ExecuteScalar();
                         Insert.Close();
+                        if(updateCheck == 1)
+                        {
+                            awayPlayersUpdatedInt++;
+                        }
+                        else
+                        {
+                            awayPlayersCreatedInt++;
+                        }
                     }
                 }
             }
         }
-        public static void PlayerBoxInsert(Root JSON)
+        public static void PlayerBoxInsert(Root JSON, int updateCheck)
         {
             int players = JSON.game.homeTeam.players.Count;
             for(int i = 0; i < players; i++)
@@ -609,6 +693,14 @@ namespace boxRider
                         Insert.Open();
                         InsertData.ExecuteScalar();
                         Insert.Close();
+                        if (updateCheck == 1)
+                        {
+                            homePlayersUpdatedInt++;
+                        }
+                        else
+                        {
+                            homePlayersCreatedInt++;
+                        }
                     }
                 }
             }
@@ -616,33 +708,33 @@ namespace boxRider
 
 
 
-        public static void DateFinder(int lastGame_id, string lastGameDate)
+        public static void DateFinder(int lastGame_id, string lastGameDate, Label gamesCreatedLbl, Label gamesUpdatedLbl, Label boxTeamsCreatedLbl, Label boxTeamsUpdatedLbl, Label boxHomePlayersCreatedLbl, Label boxHomePlayersUpdatedLbl, Label boxAwayPlayersCreatedLbl, Label boxAwayPlayersUpdatedLbl)
         {
             DateTime rightNow = DateTime.Now;
             //Out second value sent to FirstBox will always be the greatest game_id on that particular date + 1
             if (DateTime.Parse(lastGameDate) < DateTime.Parse("02/03/2024"))
             {
-                FirstBox(lastGame_id, 22300698);
+                FirstBox(lastGame_id, 22300698, gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
             }
             if (DateTime.Parse(lastGameDate) < DateTime.Parse("02/05/2024"))
             {
-                FirstBox(lastGame_id, 22300719);
+                FirstBox(lastGame_id, 22300719, gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
             }
             if (rightNow >= DateTime.Parse("02/05/2024") && rightNow < DateTime.Parse("02/16/2024"))
             {
-                FirstBox(22300576, 22300792);
+                FirstBox(22300576, 22300792, gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
             }
             if (rightNow >= DateTime.Parse("02/16/2024") && rightNow < DateTime.Parse("02/19/2024"))
             {
-                FirstBox(32300001, 32300007);
+                FirstBox(32300001, 32300007, gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
             }
             if (rightNow >= DateTime.Parse("02/19/2024") && rightNow < DateTime.Parse("03/01/2024"))
             {
-                FirstBox(22300792, 22300857);
+                FirstBox(22300792, 22300857, gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
             }
             if (rightNow >= DateTime.Parse("03/01/2024") && rightNow < DateTime.Parse("03/16/2024"))
             {
-                FirstBox(lastGame_id, 22300967);
+                FirstBox(lastGame_id, 22300967, gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
             }
         }
     }

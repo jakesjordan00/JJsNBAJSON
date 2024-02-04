@@ -59,7 +59,6 @@ namespace nbaJSON
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button pbpB;
 
-
         /// <summary>
         /// GamesGrid control.
         /// </summary>
