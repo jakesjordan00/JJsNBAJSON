@@ -71,7 +71,7 @@ namespace gameRider
                         else
                         {
                             gamesCreatedLbl.ForeColor = System.Drawing.Color.Green;
-                            gamesCreatedLbl.Text = "Program run successfully, " + gamesCreatedInt.ToString() + " games created";
+                            gamesCreatedLbl.Text = "Program run successfully, " + gamesCreatedInt.ToString() + " games created!";
                         }
                         sqlConnect.Close();
                     }
@@ -118,7 +118,7 @@ namespace gameRider
                         else
                         {
                             gamesUpdatedLbl.ForeColor = System.Drawing.Color.Green;
-                            gamesUpdatedLbl.Text = "Program run successfully, " + gamesUpdatedInt.ToString() + " games updated";
+                            gamesUpdatedLbl.Text = "Program run successfully, " + gamesUpdatedInt.ToString() + " games updated!";
                         }
                         sqlConnect.Close();
                     }
