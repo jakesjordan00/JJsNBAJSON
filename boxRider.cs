@@ -113,21 +113,21 @@ namespace boxRider
                                             boxTeamsUpdatedLbl.ForeColor = System.Drawing.Color.Green;
                                             if (teamsUpdatedInt == 1)
                                             {
-                                                boxTeamsUpdatedLbl.Text = teamsUpdatedInt.ToString() + " team was updated!";
+                                                boxTeamsUpdatedLbl.Text = teamsUpdatedInt.ToString() + " team's box score was updated!";
                                             }
                                             if (teamsUpdatedInt > 1)
                                             {
-                                                boxTeamsUpdatedLbl.Text = teamsUpdatedInt.ToString() + " teams were updated!";
+                                                boxTeamsUpdatedLbl.Text = teamsUpdatedInt.ToString() + " teams' box scores were updated!";
                                             }
                                             if (homePlayersUpdatedInt > 0)
                                             {
                                                 boxHomePlayersUpdatedLbl.ForeColor = System.Drawing.Color.Green;
-                                                boxHomePlayersUpdatedLbl.Text = homePlayersUpdatedInt.ToString() + " players for the home team have been updated!";
+                                                boxHomePlayersUpdatedLbl.Text = homePlayersUpdatedInt.ToString() + " players for the home team's box score have been updated!";
                                             }
                                             if (awayPlayersUpdatedInt > 0)
                                             {
                                                 boxAwayPlayersUpdatedLbl.ForeColor = System.Drawing.Color.Green;
-                                                boxAwayPlayersUpdatedLbl.Text = awayPlayersUpdatedInt.ToString() + " players for the away team have been updated!";
+                                                boxAwayPlayersUpdatedLbl.Text = awayPlayersUpdatedInt.ToString() + " players for the away team's box score have been updated!";
                                             }
                                         }
                                     }
@@ -242,21 +242,21 @@ namespace boxRider
                     boxTeamsCreatedLbl.ForeColor = System.Drawing.Color.Green;
                     if (teamsCreatedInt == 1)
                     {
-                        boxTeamsCreatedLbl.Text = teamsCreatedInt.ToString() + " team was created!";
+                        boxTeamsCreatedLbl.Text = teamsCreatedInt.ToString() + " team's box score was created!";
                     }
                     if (teamsCreatedInt > 1)
                     {
-                        boxTeamsCreatedLbl.Text = teamsCreatedInt.ToString() + " teams were created!";
+                        boxTeamsCreatedLbl.Text = teamsCreatedInt.ToString() + " teams' box scores were created!";
                     }
                     if (homePlayersCreatedInt > 0)
                     {
                         boxHomePlayersCreatedLbl.ForeColor = System.Drawing.Color.Green;
-                        boxHomePlayersCreatedLbl.Text = homePlayersCreatedInt.ToString() + " players for the home team have been created!";
+                        boxHomePlayersCreatedLbl.Text = homePlayersCreatedInt.ToString() + " players for the home team's box score have been created!";
                     }
                     if (awayPlayersCreatedInt > 0)
                     {
                         boxAwayPlayersCreatedLbl.ForeColor = System.Drawing.Color.Green;
-                        boxAwayPlayersCreatedLbl.Text = awayPlayersCreatedInt.ToString() + " players for the away team have been created!";
+                        boxAwayPlayersCreatedLbl.Text = awayPlayersCreatedInt.ToString() + " players for the away team's box score have been created!";
                     }
                 }
             }

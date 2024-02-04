@@ -33,13 +33,33 @@ namespace nbaJSON
         public global::System.Web.UI.HtmlControls.HtmlGenericControl AwayPlayerColumnU;
         public global::System.Web.UI.WebControls.Label boxAwayPlayersUpdatedLbl;
 
-
-
-
         public static string ConnectionString = "Server=localhost;Database=myNBA;User Id=test;Password=test123;";
+
+        //
         protected void Page_Load(object sender, EventArgs e)
         {
-            
+            SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
+            {
+                using (DupeCheckConnect)
+                {
+                    using (SqlCommand DupeSearch = new SqlCommand("loadCheck"))
+                    {
+                        DupeSearch.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataAdapter sDupeSearch = new SqlDataAdapter())
+                        {
+                            DupeSearch.Connection = DupeCheckConnect;
+                            sDupeSearch.SelectCommand = DupeSearch;
+                            DupeCheckConnect.Open();
+                            SqlDataReader reader = DupeSearch.ExecuteReader();
+                            if (reader.HasRows)
+                            {
+                                loadB.Enabled = false;
+                                loadB.Style.Value = "color:Black; background-color:Gray; border-color:black; text-decoration:none;  text-align:center;border-radius: 15px; border: 3px solid black;";
+                            }
+                        }
+                    }
+                }
+            }
         }
         protected void loadB_Click(object sender, EventArgs e)
         {

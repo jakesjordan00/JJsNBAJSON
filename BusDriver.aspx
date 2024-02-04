@@ -61,7 +61,7 @@
     </div>
      <%--<div class="row" style="height:fit-content">--%>
         <div class="row" id="gameColumnC" runat="server"  visible="false" style="width: fit-content">
-            <asp:Label ID="gamesCreatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="false" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
+            <asp:Label ID="gamesCreatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="false" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px; font: bold" Font-Bold="true" ></asp:Label>
         </div>
         <div class="row" id="teamColumnC" runat="server" visible="false" style="width: fit-content">
             <asp:Label ID="boxTeamsCreatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="false" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
@@ -75,8 +75,8 @@
     <%--</div>--%>
 
     <%--<div class="row" style="height:fit-content">--%>
-        <div class="row" id="gameColumnU" runat="server" visible="false" style="width: fit-content">
-            <asp:Label ID="gamesUpdatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="false" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>  
+        <div class="row" id="gameColumnU" runat="server" visible="false" style="width: fit-content" >
+            <asp:Label ID="gamesUpdatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="false" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px; font: bold" Font-Bold="true" ></asp:Label>  
         </div>
         <div class="row" id="teamColumnU" runat="server" visible="false" style="width: fit-content">
             <asp:Label ID="boxTeamsUpdatedLbl" runat="server"  ForeColor="black" Font-Size="Large" Visible="false" style="text-align:center; vertical-align:middle; padding:10px 0px 0px 0px" ></asp:Label>
