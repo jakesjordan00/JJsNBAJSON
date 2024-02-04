@@ -35,7 +35,10 @@ namespace nbaJSON
 
         public static string ConnectionString = "Server=localhost;Database=myNBA;User Id=test;Password=test123;";
 
-        //
+        ///<<< JJ >>> 
+        ///<<<<<<<<<<<<<<<<<<        JJ's NBA JSON Parser        >>>>>>>>>>>>>>>>>>
+        ///<<< JJ >>>Upon loading the Bus Driver page, this method uses SQL Stored Procedure loadCheck to see if there are any rows in our FirstTimeLoad table where loadCheck is = 1.
+        ///             If there are, we are going to disable the First Time Load button    
         protected void Page_Load(object sender, EventArgs e)
         {
             SqlConnection DupeCheckConnect = new SqlConnection(Bus_Driver.ConnectionString);
@@ -61,6 +64,9 @@ namespace nbaJSON
                 }
             }
         }
+        ///<<< JJ >>> 
+        ///<<<<<<<<<<<<<<<<<<        JJ's NBA JSON Parser        >>>>>>>>>>>>>>>>>>
+        ///<<< JJ >>>
         protected void loadB_Click(object sender, EventArgs e)
         {
             earlyBird.earlyBird.LoadCheck(statusL);
@@ -68,7 +74,9 @@ namespace nbaJSON
 
 
 
-
+        ///<<< JJ >>> 
+        ///<<<<<<<<<<<<<<<<<<        JJ's NBA JSON Parser        >>>>>>>>>>>>>>>>>>
+        ///<<< JJ >>>
         protected void gameB_Click(object sender, EventArgs e)
         {
             gameRider.gameRider.CheckGames(gamesCreatedLbl, gamesUpdatedLbl);
@@ -77,8 +85,11 @@ namespace nbaJSON
             gameColumnU.Visible = true;
             gamesUpdatedLbl.Visible = true;
 
-        }
 
+        }
+        ///<<< JJ >>> 
+        ///<<<<<<<<<<<<<<<<<<        JJ's NBA JSON Parser        >>>>>>>>>>>>>>>>>>
+        ///<<< JJ >>>
         protected void boxB_Click(object sender, EventArgs e)
         {
             boxRider.boxRider.CheckGames(gamesCreatedLbl, gamesUpdatedLbl, boxTeamsCreatedLbl, boxTeamsUpdatedLbl, boxHomePlayersCreatedLbl, boxHomePlayersUpdatedLbl, boxAwayPlayersCreatedLbl, boxAwayPlayersUpdatedLbl);
@@ -100,7 +111,9 @@ namespace nbaJSON
             boxAwayPlayersUpdatedLbl.Visible = true;
         }
 
-
+        ///<<< JJ >>> 
+        ///<<<<<<<<<<<<<<<<<<        JJ's NBA JSON Parser        >>>>>>>>>>>>>>>>>>
+        ///<<< JJ >>>
         protected void pbpB_Click(object sender, EventArgs e)
         {
             //Get count of games
@@ -131,6 +144,9 @@ namespace nbaJSON
             }
         }
 
+        ///<<< JJ >>> 
+        ///<<<<<<<<<<<<<<<<<<        JJ's NBA JSON Parser        >>>>>>>>>>>>>>>>>>
+        ///<<< JJ >>>
         protected void playoffB_Click(object sender, EventArgs e)
         {
             playoffRider.playoffRider.init();
