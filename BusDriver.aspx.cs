@@ -66,7 +66,7 @@ namespace nbaJSON
         }
         ///<<< JJ >>> 
         ///<<<<<<<<<<<<<<<<<<        JJ's NBA JSON Parser        >>>>>>>>>>>>>>>>>>
-        ///<<< JJ >>>
+        ///<<< JJ >>>After clicking the First Time Load button, this function will send us to the earlyBird.cs code file with a Status label.
         protected void loadB_Click(object sender, EventArgs e)
         {
             earlyBird.earlyBird.LoadCheck(statusL);
