@@ -1,14 +1,3 @@
---Game procedures
---	Called by gameRider.cs
---	Checks to see what the most recent game is
-create procedure lastGame
-as
-select top 1 * 
-from game 
-order by date desc, game_id desc
-go
-
---Checks the games from the last three days to see if their database values need to be updated
 create procedure checkGames
 as
 select * from game 
@@ -16,7 +5,35 @@ where date >= GETDATE() - 3
 order by game_id desc
 go
 
---Inserts game into game table
+create procedure checkPicture
+as
+select top 1 * from PlayoffPicture
+go
+
+create procedure deleteFirst @game_id int, @team_id int
+as
+delete from teamBox where game_id = @game_id and team_id = @team_id
+delete from playerBox where game_id = @game_id and team_id = @team_id
+go
+
+create procedure DupeCheck @game_id int
+as 
+select game_id, count(actionNumber) actionCount
+from PlayByPlay
+where game_id = @game_id
+group by game_id
+go
+
+create procedure gameCheck @game_id	int
+as
+select * from game where game_id = @game_id
+go
+
+create procedure firstBox
+as
+select top 1 game_id, team_id from teamBox
+go
+
 create procedure gameInsert 
 @game_id	int,
 @date		date,
@@ -43,26 +60,64 @@ insert into game values(
 )
 go
 
---If the game already exists and the score has changed, update it
-create procedure gameUpdate @game_id int, @team_idW int, @wScore int, @team_idL int, @lScore int
+create procedure checkBracket
 as
-update game set team_idW = @team_idW, wScore = @wScore, team_idL = @team_idL, lScore = @lScore
-where game_id = @game_id
+select top 1 * from PlayoffBracket
+
+create procedure checkBox
+as
+select g.date, t.game_id, t.team_id, t.points, t.atHome
+from teamBox t inner join 
+		game g on t.game_id = g.game_id
+where g.date >= (select max(game.date) from teamBox inner join game on teamBox.game_id = game.game_id)
+order by date desc, game_id desc
 go
 
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
---Arena procedures
---  Called in earlyBird.cs. 
---	Only used when clicking the First Load button.
---	Checks to see if the arena from the game being read exists
-create procedure arenaCheck @arena_id	int
+create procedure bracketInsert 
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@description			varchar(100),
+@status					int,		
+@seriesWinner			int,
+@highSeedId				int,
+@highSeedSeriesWins		int,
+@lowSeedId				int,
+@lowSeedSeriesWins	 	int,
+@nextGame_id			int,		
+@nextGameNumber			int,
+@nextSeries_id			int
 as
-select * from arena where arena_id = @arena_id
+insert into PlayoffBracket values(
+@series_id			,
+@conference			,
+@roundNumber		,
+@description		,
+@status				,
+@seriesWinner		,
+@highSeedId			,
+@highSeedSeriesWins	,
+@lowSeedId			,
+@lowSeedSeriesWins	,
+@nextGame_id		,
+@nextGameNumber		,
+@nextSeries_id		
+)
+
+create procedure blankBracketInsert 
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@status					int		
+as
+insert into PlayoffBracket (series_id, conference, roundNumber, status)
+values(
+@series_id			,
+@conference			,
+@roundNumber		,
+@status)
 go
 
---If the arena does not exist, this procedure will run and insert into arena table.
 create procedure arenaInsert 
 @arena_id	int,
 @team_id	int,
@@ -79,10 +134,241 @@ insert into arena values(
 @state,
 @country)
 go
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
---Official procedures
---	Same deal as the arenas. No further explanation needed, literally same exact thing but different table.
+
+create procedure blackBracketCheck @series_id int
+as
+select * from PlayoffBracket where series_id = @series_id
+go
+
+create procedure arenaCheck @arena_id	int
+as
+select * from arena where arena_id = @arena_id
+go
+
+create procedure gameLoadCheck
+as
+select * from game 
+where date >= GETDATE() - 3
+order by game_id desc
+go
+
+
+create procedure updatePictureCheck
+@conference					varchar(4),	
+@matchupType				varchar(30),
+@highSeed_id				int,		
+@highSeedRank				int,
+@highSeedRegSeasonWins		int,
+@highSeedRegSeasonLosses	int,
+@lowSeed_id					int,		
+@lowSeedRank				int,
+@lowSeedRegSeasonWins		int,
+@lowSeedRegSeasonLosses 	int
+as
+select * 
+from PlayoffPicture
+where (conference = @conference and matchupType = @matchupType) and (
+highSeed_id				!= @highSeed_id				or
+highSeedRank			!= @highSeedRank			or
+highSeedRegSeasonWins	!= @highSeedRegSeasonWins	or
+highSeedRegSeasonLosses	!= @highSeedRegSeasonLosses or
+lowSeed_id				!= @lowSeed_id				or
+lowSeedRank				!= @lowSeedRank				or
+lowSeedRegSeasonWins	!= @lowSeedRegSeasonWins	or
+lowSeedRegSeasonLosses	!= @lowSeedRegSeasonLosses)
+go
+
+create procedure teamInsert
+@team_id	 int, 
+@tricode	 varchar(3),
+@city		 varchar(30),
+@name		 varchar(30),
+@yearFounded int			
+as
+insert into team values(
+@team_id,	
+@tricode,	
+@city,		
+@name,		
+@yearFounded
+)
+go
+
+create procedure updateBracket
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@description			varchar(100),
+@status					int,		
+@seriesWinner			int,
+@highSeed_id			int,
+@highSeedSeriesWins		int,
+@lowSeed_id				int,
+@lowSeedSeriesWins	 	int,
+@nextGame_id			int,		
+@nextGameNumber			int,
+@nextSeries_id			int
+as
+update PlayoffBracket set
+description			= @description			,
+status				= @status				,
+seriesWinner		= @seriesWinner			,
+highSeed_id			= @highSeed_id			,
+highSeedSeriesWins	= @highSeedSeriesWins	,
+lowSeed_id			= @lowSeed_id			,
+lowSeedSeriesWins	= @lowSeedSeriesWins	,
+nextGame_id			= @nextGame_id			,
+nextGameNumber		= @nextGameNumber		,
+nextSeries_id		= @nextSeries_id		
+where series_id = @series_id and (
+description			!= @description			or
+status				!= @status				or
+seriesWinner		!= @seriesWinner		or
+highSeed_id			!= @highSeed_id			or
+highSeedSeriesWins	!= @highSeedSeriesWins	or
+lowSeed_id			!= @lowSeed_id			or
+lowSeedSeriesWins	!= @lowSeedSeriesWins	or
+nextGame_id			!= @nextGame_id			or
+nextGameNumber		!= @nextGameNumber		or
+nextSeries_id		!= @nextSeries_id		)
+
+
+create procedure updateBracketCheck
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@description			varchar(100),
+@status					int,		
+@seriesWinner			int,
+@highSeed_id			int,
+@highSeedSeriesWins		int,
+@lowSeed_id				int,
+@lowSeedSeriesWins	 	int,
+@nextGame_id			int,		
+@nextGameNumber			int,
+@nextSeries_id			int
+as
+select * 
+from PlayoffBracket
+where series_id = @series_id and (
+description				!= @description				or
+status					!= @status					or
+seriesWinner			!= @seriesWinner			or
+highSeed_id				!= @highSeed_id				or
+highSeedSeriesWins		!= @highSeedSeriesWins		or
+lowSeed_id				!= @lowSeed_id				or
+lowSeedSeriesWins		!= @lowSeedSeriesWins		or
+nextGame_id				!= @nextGame_id				or
+nextGameNumber			!= @nextGameNumber			or
+nextSeries_id			!= @nextSeries_id)
+go
+
+
+
+create procedure updateBracketCheckEntry
+@series_id				int,
+@conference				varchar(4),	
+@roundNumber			int,
+@description			varchar(100),
+@status					int,		
+@seriesWinner			int,
+@highSeed_id			int,
+@highSeedSeriesWins		int,
+@lowSeed_id				int,
+@lowSeedSeriesWins	 	int,
+@nextGame_id			int,		
+@nextGameNumber			int,
+@nextSeries_id			int
+as
+select * 
+from PlayoffBracket
+where 
+series_id = @series_id								and 
+conference = @conference		and
+description				= @description				and
+status					= @status					and
+seriesWinner			= @seriesWinner				and
+highSeed_id				= @highSeed_id				and
+highSeedSeriesWins		= @highSeedSeriesWins		and
+lowSeed_id				= @lowSeed_id				and
+lowSeedSeriesWins		= @lowSeedSeriesWins		and
+nextGame_id				= @nextGame_id				and
+nextGameNumber			= @nextGameNumber			and
+nextSeries_id			= @nextSeries_id
+go
+
+create procedure updatePicture
+@conference					varchar(4),	
+@matchupType				varchar(30),
+@highSeed_id				int,		
+@highSeedRank				int,
+@highSeedRegSeasonWins		int,
+@highSeedRegSeasonLosses	int,
+@lowSeed_id					int,		
+@lowSeedRank				int,
+@lowSeedRegSeasonWins		int,
+@lowSeedRegSeasonLosses 	int
+as
+update PlayoffPicture set
+highSeed_id				= @highSeed_id				,
+highSeedRank			= @highSeedRank				,
+highSeedRegSeasonWins	= @highSeedRegSeasonWins	,
+highSeedRegSeasonLosses	= @highSeedRegSeasonLosses	,
+lowSeed_id				= @lowSeed_id				,
+lowSeedRank				= @lowSeedRank				,
+lowSeedRegSeasonWins	= @lowSeedRegSeasonWins		,
+lowSeedRegSeasonLosses	= @lowSeedRegSeasonLosses
+where (conference = @conference and matchupType = @matchupType) and (
+highSeed_id				!= @highSeed_id				or
+highSeedRank			!= @highSeedRank			or
+highSeedRegSeasonWins	!= @highSeedRegSeasonWins	or
+highSeedRegSeasonLosses	!= @highSeedRegSeasonLosses or
+lowSeed_id				!= @lowSeed_id				or
+lowSeedRank				!= @lowSeedRank				or
+lowSeedRegSeasonWins	!= @lowSeedRegSeasonWins	or
+lowSeedRegSeasonLosses	!= @lowSeedRegSeasonLosses)
+go
+
+create procedure updatePictureCheckEntry
+@conference					varchar(4),	
+@matchupType				varchar(30),
+@highSeed_id				int,		
+@highSeedRank				int,
+@highSeedRegSeasonWins		int,
+@highSeedRegSeasonLosses	int,
+@lowSeed_id					int,		
+@lowSeedRank				int,
+@lowSeedRegSeasonWins		int,
+@lowSeedRegSeasonLosses 	int
+as
+select * 
+from PlayoffPicture
+where 
+conference				= @conference				and 
+matchupType				= @matchupType				and 
+highSeedRank			= @highSeedRank				and 
+highSeed_id				= @highSeed_id				and
+highSeedRank			= @highSeedRank				and
+highSeedRegSeasonWins	= @highSeedRegSeasonWins	and
+highSeedRegSeasonLosses	= @highSeedRegSeasonLosses	and
+lowSeed_id				= @lowSeed_id				and
+lowSeedRank				= @lowSeedRank				and
+lowSeedRegSeasonWins	= @lowSeedRegSeasonWins		and
+lowSeedRegSeasonLosses	= @lowSeedRegSeasonLosses
+go
+
+create procedure lastGame
+as
+select top 1 * 
+from game 
+order by date desc, game_id desc
+go
+
+create procedure loadCheck
+as
+select * from FirstTimeLoad where loadCheck = 1
+go
+
 create procedure officialCheck @official_id	int
 as
 select * from official where official_id = @official_id
@@ -101,84 +387,32 @@ insert into official values(
 @assignment
 )
 go
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
---Tean procedures
---	Same deal as the arenas. No further explanation needed, literally same exact thing but different table.
-create procedure teamCheck @team_id	int
+
+create procedure pictureInsert
+@conference					varchar(4),	
+@matchupType				varchar(30),
+@highSeed_id				int,		
+@highSeedRank				int,
+@highSeedRegSeasonWins		int,
+@highSeedRegSeasonLosses	int,
+@lowSeed_id					int,		
+@lowSeedRank				int,
+@lowSeedRegSeasonWins		int,
+@lowSeedRegSeasonLosses 	int
 as
-select * from team where team_id = @team_id
+insert into PlayoffPicture values(
+@conference				,
+@matchupType			,
+@highSeed_id			,
+@highSeedRank			,
+@highSeedRegSeasonWins	,
+@highSeedRegSeasonLosses,
+@lowSeed_id				,
+@lowSeedRank			,
+@lowSeedRegSeasonWins	,
+@lowSeedRegSeasonLosses)
 go
 
-create procedure teamInsert
-@team_id	 int, 
-@tricode	 varchar(3),
-@city		 varchar(30),
-@name		 varchar(30),
-@yearFounded int			
-as
-insert into team values(
-@team_id,	
-@tricode,	
-@city,		
-@name,		
-@yearFounded
-)
-go
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
---Player procedures
---	Same deal as the arenas. Add one procedure to update position
---	Position only appears if they start the game in that poistion.
-create procedure playerCheck @player_id	int
-as
-select * from player where player_id = @player_id
-go
-
-create procedure playerInsert 
-@player_id	int,
-@name		varchar(100),
-@number		int,
-@position	varchar(20),
-@college	varchar(50),
-@country	varchar(50),	
-@draftYear	int,			
-@draftRound	int,			
-@draftPick	int				
-as
-insert into player values(
-@player_id,
-@name,
-@number,
-@position,
-@college,
-@country,
-@draftYear,
-@draftRound,
-@draftPick
-)
-go
-
-create procedure playerUpdate @player_id int, @position varchar(30)
-as
-update player set position = @position where player_id = @player_id
-go
-
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
---PlayByPlay procedures
---	Checks to see if we have the current game, and the number of actions or rows we have.
---	If we have the game and the number of actions differs from that of the endpoint, we insert every subsequent action
-create procedure DupeCheck @game_id int
-as 
-select game_id, count(actionNumber) actionCount
-from PlayByPlay
-where game_id = @game_id
-group by game_id
-go
-
---Inserts single play from PlayByPlay endpoint
 create procedure PlayByPlayInsert
 			@game_id				int null, 
 			@actionNumber			int null, 
@@ -280,34 +514,128 @@ case when	@player_idJumpL = 0 then null else @player_idJumpL end,
 case when	@official_id = 0 then null else @official_id end)
 go
 
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------
---BoxScore procedures
---	Checks to see if we are doing first time run for box score
-create procedure firstBox
+create procedure playerCheck @player_id	int
 as
-select top 1 game_id, team_id from teamBox
+select * from player where player_id = @player_id
 go
 
---Checks to see if we need to update for any of games in last three days
-create procedure checkBox
+
+create procedure playerBoxInsert
+@game_id						int,
+@team_id						int,
+@player_id						int,
+@status							varchar(30),
+@starter						int,
+@position						varchar(2),
+@points							int,
+@assists						int   ,
+@blocks							int   ,
+@blocksReceived					int   ,
+@fieldGoalsAttempted			int   ,
+@fieldGoalsMade					int   ,
+@fieldGoalsPercentage			float,
+@foulsOffensive					int   ,
+@foulsDrawn						int   ,
+@foulsPersonal					int   ,
+@foulsTechnical					int   ,
+@freeThrowsAttempted			int   ,
+@freeThrowsMade					int   ,
+@freeThrowsPercentage			float,
+@minus							float,
+@minutes						varchar(30),
+@minutesCalculated				varchar(30),
+@plus							float,
+@plusMinusPoints				float,
+@pointsFastBreak				int   ,
+@pointsInThePaint				int   ,
+@pointsSecondChance				int   ,
+@reboundsDefensive				int   ,
+@reboundsOffensive				int   ,
+@reboundsTotal					int   ,
+@steals							int   ,
+@threePointersAttempted			int   ,
+@threePointersMade				int   ,
+@threePointersPercentage		float,
+@turnovers						int   ,
+@twoPointersAttempted			int   ,
+@twoPointersMade				int   ,
+@twoPointersPercentage			float,
+@statusReason					varchar(100),
+@statusDescription				varchar(200)
 as
-select g.date, t.game_id, t.team_id, t.points, t.atHome
-from teamBox t inner join 
-		game g on t.game_id = g.game_id
-where g.date >= GETDATE() - 3
-order by date desc, game_id desc
+insert into playerBox values(
+@game_id						,
+@team_id						,
+@player_id						,
+@status							,
+@starter						,
+@position						,
+@points							,
+@assists						,
+@blocks							,
+@blocksReceived					,
+@fieldGoalsAttempted			,
+@fieldGoalsMade					,
+@fieldGoalsPercentage			,
+@foulsOffensive					,
+@foulsDrawn						,
+@foulsPersonal					,
+@foulsTechnical					,
+@freeThrowsAttempted			,
+@freeThrowsMade					,
+@freeThrowsPercentage			,
+@minus							,
+@minutes						,
+@minutesCalculated				,
+@plus							,
+@plusMinusPoints				,
+@pointsFastBreak				,
+@pointsInThePaint				,
+@pointsSecondChance				,
+@reboundsDefensive				,
+@reboundsOffensive				,
+@reboundsTotal					,
+@steals							,
+@threePointersAttempted			,
+@threePointersMade				,
+@threePointersPercentage		,
+@turnovers						,
+@twoPointersAttempted			,
+@twoPointersMade				,
+@twoPointersPercentage			,
+@statusReason					,
+@statusDescription				)
 go
 
---If we need to update any, delete them now
-create procedure deleteFirst @game_id int, @team_id int
+create procedure playerInsert 
+@player_id	int,
+@name		varchar(100),
+@number		int,
+@position	varchar(20),
+@college	varchar(50),
+@country	varchar(50),	
+@draftYear	int,			
+@draftRound	int,			
+@draftPick	int				
 as
-delete from teamBox where game_id = @game_id and team_id = @team_id
-delete from playerBox where game_id = @game_id and team_id = @team_id
+insert into player values(
+@player_id,
+@name,
+@number,
+@position,
+@college,
+@country,
+@draftYear,
+@draftRound,
+@draftPick
+)
 go
 
---Insert Team BoxScores
+create procedure playerUpdate @player_id int, @position varchar(30)
+as
+update player set position = @position where player_id = @player_id
+go
+
 create procedure teamBoxInsert
 @game_id							int,
 @team_id							int,
@@ -469,100 +797,43 @@ insert into teamBox values(
 @turnoversTotal					)
 go
 
---Insert Player BoxScores
-
-create procedure playerBoxInsert
-@game_id						int,
-@team_id						int,
-@player_id						int,
-@status							varchar(30),
-@starter						int,
-@position						varchar(2),
-@points							int,
-@assists						int   ,
-@blocks							int   ,
-@blocksReceived					int   ,
-@fieldGoalsAttempted			int   ,
-@fieldGoalsMade					int   ,
-@fieldGoalsPercentage			float,
-@foulsOffensive					int   ,
-@foulsDrawn						int   ,
-@foulsPersonal					int   ,
-@foulsTechnical					int   ,
-@freeThrowsAttempted			int   ,
-@freeThrowsMade					int   ,
-@freeThrowsPercentage			float,
-@minus							float,
-@minutes						varchar(30),
-@minutesCalculated				varchar(30),
-@plus							float,
-@plusMinusPoints				float,
-@pointsFastBreak				int   ,
-@pointsInThePaint				int   ,
-@pointsSecondChance				int   ,
-@reboundsDefensive				int   ,
-@reboundsOffensive				int   ,
-@reboundsTotal					int   ,
-@steals							int   ,
-@threePointersAttempted			int   ,
-@threePointersMade				int   ,
-@threePointersPercentage		float,
-@turnovers						int   ,
-@twoPointersAttempted			int   ,
-@twoPointersMade				int   ,
-@twoPointersPercentage			float,
-@statusReason					varchar(100),
-@statusDescription				varchar(200)
-as
-insert into playerBox values(
-@game_id						,
-@team_id						,
-@player_id						,
-@status							,
-@starter						,
-@position						,
-@points							,
-@assists						,
-@blocks							,
-@blocksReceived					,
-@fieldGoalsAttempted			,
-@fieldGoalsMade					,
-@fieldGoalsPercentage			,
-@foulsOffensive					,
-@foulsDrawn						,
-@foulsPersonal					,
-@foulsTechnical					,
-@freeThrowsAttempted			,
-@freeThrowsMade					,
-@freeThrowsPercentage			,
-@minus							,
-@minutes						,
-@minutesCalculated				,
-@plus							,
-@plusMinusPoints				,
-@pointsFastBreak				,
-@pointsInThePaint				,
-@pointsSecondChance				,
-@reboundsDefensive				,
-@reboundsOffensive				,
-@reboundsTotal					,
-@steals							,
-@threePointersAttempted			,
-@threePointersMade				,
-@threePointersPercentage		,
-@turnovers						,
-@twoPointersAttempted			,
-@twoPointersMade				,
-@twoPointersPercentage			,
-@statusReason					,
-@statusDescription				)
-go
-
---Check the last box we have after deleting
---Not sure if redundant at the moment
 create procedure lastBox
 as 
 select top 1 * 
-from teamBox 
-order by date desc, game_id desc
+from teamBox t inner join 
+		game g on t.game_id = g.game_id
+order by date desc, t.game_id desc
 go
+
+create procedure gameUpdate @game_id int, @team_idW int, @wScore int, @team_idL int, @lScore int
+as
+update game set team_idW = @team_idW, wScore = @wScore, team_idL = @team_idL, lScore = @lScore
+where game_id = @game_id
+go
+
+create procedure jsonGames
+as
+select distinct 
+case when g.game_id is null then p.game_id else g.game_id end game_id
+from game g  left join
+		PlayByPlay p on g.game_id = p.game_id
+where timeActual > getdate() - 3 or timeActual is null
+order by game_id asc
+go
+
+create procedure teamCheck @team_id	int
+as
+select * from team where team_id = @team_id
+go
+
+
+
+
+
+
+
+
+
+
+
+
