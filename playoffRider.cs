@@ -229,7 +229,7 @@ namespace playoffRider
                 for (int i = 0; i < count; i++)
                 {
                     string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Remove(0, 3).Remove(1, 2).Replace("0000000000", "").Insert(3, "00").Replace("_", "");
-                    using (SqlCommand BlankCheck = new SqlCommand("blackBracketCheck"))
+                    using (SqlCommand BlankCheck = new SqlCommand("blankBracketCheck"))
                     {
                         BlankCheck.Connection = SQL;
                         BlankCheck.CommandType = CommandType.StoredProcedure;
@@ -242,6 +242,7 @@ namespace playoffRider
                         }
                         else
                         {
+                            SQL.Close();
                             using (SqlCommand InsertData = new SqlCommand("blankBracketInsert"))
                             {
                                 InsertData.Connection = SQL;
@@ -270,7 +271,7 @@ namespace playoffRider
                     int highSeed_id = JSON.bracket.playoffBracketSeries[i].highSeedId;
                     int lowSeed_id = JSON.bracket.playoffBracketSeries[i].lowSeedId;
                     string series_id = JSON.bracket.playoffBracketSeries[i].seriesId.Remove(0, 3).Remove(1, 2).Replace(lowSeed_id.ToString(), "").Replace(highSeed_id.ToString(), "").Insert(3, "00").Replace("_", "");
-                    using (SqlCommand BlankCheck = new SqlCommand("blackBracketCheck"))
+                    using (SqlCommand BlankCheck = new SqlCommand("blankBracketCheck"))
                     {
                         BlankCheck.Connection = SQL;
                         BlankCheck.CommandType = CommandType.StoredProcedure;
