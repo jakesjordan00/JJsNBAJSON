@@ -124,6 +124,7 @@ namespace earlyBird
 
                 }
             }
+            playoffRider.playoffRider.init();
         }
 
         public static void ArenaCheck(Root JSON, int arena_id)
